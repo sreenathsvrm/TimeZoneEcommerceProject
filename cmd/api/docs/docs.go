@@ -354,6 +354,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/coupon/AddCoupons": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Admin can add coupon",
+                "tags": [
+                    "Coupon"
+                ],
+                "summary": "api for add Coupons for ecommerce",
+                "operationId": "AddCoupon",
+                "parameters": [
+                    {
+                        "description": "Input true info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/urequest.Coupon"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully productItem added to cart"
+                    },
+                    "400": {
+                        "description": "can't add the product item into cart"
+                    }
+                }
+            }
+        },
         "/admin/findall": {
             "get": {
                 "consumes": [
@@ -496,6 +530,120 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "failed"
+                    }
+                }
+            }
+        },
+        "/admin/order/Allorders": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "FindAllorders In admin side",
+                "operationId": "FindAllordersInshop",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number for pagination",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of items to retrieve per page",
+                        "name": "perPage",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/order/Status": {
+            "get": {
+                "description": "Endpoint for getting all orderStatuses",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "for geting all order status list",
+                "operationId": "List-all-orderStatus",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/order/UpdateStatus": {
+            "patch": {
+                "description": "update the order statuses by every orderid.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Updateorderstatus",
+                "operationId": "Order_status",
+                "parameters": [
+                    {
+                        "description": "Input Field",
+                        "name": "inputs",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/urequest.Update"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     }
                 }
             }
@@ -1458,6 +1606,33 @@ const docTemplate = `{
                 }
             }
         },
+        "urequest.Coupon": {
+            "type": "object",
+            "required": [
+                "discountpercent",
+                "expirationdate",
+                "maximumdiscountprice",
+                "minimumpurchaseamount",
+                "usagelimit"
+            ],
+            "properties": {
+                "discountpercent": {
+                    "type": "number"
+                },
+                "expirationdate": {
+                    "type": "string"
+                },
+                "maximumdiscountprice": {
+                    "type": "number"
+                },
+                "minimumpurchaseamount": {
+                    "type": "number"
+                },
+                "usagelimit": {
+                    "type": "integer"
+                }
+            }
+        },
         "urequest.Flogin": {
             "type": "object",
             "required": [
@@ -1547,6 +1722,21 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "qty_in_stock": {
+                    "type": "integer"
+                }
+            }
+        },
+        "urequest.Update": {
+            "type": "object",
+            "required": [
+                "order_id",
+                "status_id"
+            ],
+            "properties": {
+                "order_id": {
+                    "type": "integer"
+                },
+                "status_id": {
                     "type": "integer"
                 }
             }

@@ -82,8 +82,9 @@ func (c *productDB) UpdateProduct(ctx context.Context, id int, product urequest.
 
 	var Newproduct response.Product
 
-	query := `UPDATE products SET product_name = $1, description = $2, brand = $3, prize = $4, qty_in_stock=$5,category_id = $6, updated_at = NOW() WHERE id = $6 
-	RETURNING id, product_name as name, description, brand, prize, qty_in_stock ,category_id`
+	query := `UPDATE products SET product_name = $1, description = $2, brand = $3, prize = $4, qty_in_stock = $5, category_id = $6, updated_at = NOW() WHERE id = $7 
+	RETURNING id, product_name as name, description, brand, prize, qty_in_stock, category_id`
+
 
 
 	err := c.DB.Raw(query, product.Name, product.Description, product.Brand,

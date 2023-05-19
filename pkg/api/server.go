@@ -17,7 +17,7 @@ type ServerHTTP struct {
 
 func NewServerHTTP(userHandler *handler.UserHandler,
 	otpHandler *handler.OtpHandler,
-	AdminHandler *handler.AdminHandler, ProductHandler *handler.ProductHandler, CartHandler *handler.CartHandler, OrderHandler *handler.OrderHandler) *ServerHTTP {
+	AdminHandler *handler.AdminHandler, ProductHandler *handler.ProductHandler, CartHandler *handler.CartHandler, OrderHandler *handler.OrderHandler,CouponHandler *handler.CouponHandler) *ServerHTTP {
 	engine := gin.New()
 
 	// Use logger from Gin
@@ -109,6 +109,17 @@ func NewServerHTTP(userHandler *handler.UserHandler,
 			product.DELETE("delete/:product_id", ProductHandler.DeleteProduct)
 			product.GET("ViewAllProducts", ProductHandler.ViewAllProducts)
 			product.GET("ViewProduct/:id", ProductHandler.VeiwProduct)
+		}
+
+		order := admin.Group("/order")
+		{
+			order.GET("/Status", OrderHandler.Statuses)
+			order.GET("/Allorders", OrderHandler.AllOrders)
+			order.PATCH("/UpdateStatus", OrderHandler.UpdateOrderStatus)
+		}
+		coupon:=admin.Group("/coupon")
+		{
+			coupon.POST("/AddCoupons",CouponHandler.AddCoupon)
 		}
 	}
 

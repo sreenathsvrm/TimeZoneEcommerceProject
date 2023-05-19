@@ -114,9 +114,9 @@ func (c *Orderusecase) CancelOrder(ctx context.Context, orderId, userId int) err
 	return err
 }
 
-func (c *Orderusecase) Listorders(ctx context.Context, userid int) ([]domain.Orders, error) {
-	var orders []domain.Orders
-	orders, err := c.orderRepo.Listorders(ctx, userid)
+func (c *Orderusecase) Listorders(ctx context.Context, userid int) ([]response.OrderResponse, error) {
+	var orders []response.OrderResponse
+	orders, err := c.orderRepo.Listorders(ctx)
 	return orders, err
 }
 
@@ -128,4 +128,20 @@ func (c *Orderusecase) Listorder(ctx context.Context, Orderid int, UserId int) (
 func (c *Orderusecase) ReturnOrder(userId, orderId int) (float64, error) {
 	total, err := c.orderRepo.ReturnOrder(userId, orderId)
 	return total, err
+}
+
+func (c *Orderusecase)ListofOrderStatuses(ctx context.Context) ([]domain.OrderStatus,  error)  {
+	var status []domain.OrderStatus
+	status,err:=c.orderRepo.ListofOrderStatuses(ctx)
+	return status,err
+}
+
+func(c *Orderusecase)AdminListorders(ctx context.Context, pagination urequest.Pagination) (orders []domain.Orders,err error){
+	orders,err=c.orderRepo.AdminListorders(ctx,pagination)
+	return orders,err
+}
+
+func (c *Orderusecase)UpdateOrderStatus(ctx context.Context, update urequest.Update) ( error) {
+	 err:=c.orderRepo.UpdateOrderStatus(ctx,update)
+	 return err
 }

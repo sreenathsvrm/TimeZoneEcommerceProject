@@ -24,7 +24,7 @@ type Product struct {
 
 type PaymentMethod struct {
 	ID            uint `gorm:"primaryKey"`
-	PaymentMethod string  
+	PaymentMethod string  `json:"payment_method"`
 }
 
 type PaymentStatus struct{

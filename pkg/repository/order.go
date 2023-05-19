@@ -2,9 +2,11 @@ package repository
 
 import (
 	"context"
+	"ecommerce/pkg/commonhelp/response"
 	"ecommerce/pkg/commonhelp/urequest"
 	"ecommerce/pkg/domain"
 	interfaces "ecommerce/pkg/repository/interface"
+	"errors"
 	"fmt"
 
 	"gorm.io/gorm"
@@ -122,8 +124,7 @@ func (c *OrderDB) OrderAll(ctx context.Context, UserID, paymentMethodId int) (do
 
 }
 
-
-func (c *OrderDB)CancelOrder(ctx context.Context,orderId, userId int) error {
+func (c *OrderDB) CancelOrder(ctx context.Context, orderId, userId int) error {
 	tx := c.DB.Begin()
 
 	//find the orderd product and qty and update the product with those
@@ -167,21 +168,43 @@ func (c *OrderDB)CancelOrder(ctx context.Context,orderId, userId int) error {
 	return nil
 }
 
-func (c *OrderDB)Listorders(ctx context.Context,userId int) ([]domain.Orders,error)  {
-	var orders []domain.Orders
-	Query := `SELECT * FROM orders WHERE user_id=?`
-	err := c.DB.Raw(Query, userId).Scan(&orders).Error
-	return orders, err
+func (c *OrderDB) Listorders(ctx context.Context) ([]response.OrderResponse, error) {
+	var orders []response.OrderResponse
+	Query := `SELECT o.id, o.user_id, o.order_date, o.payment_method_id, pm.payment_method, o.shipping_address_id,a.house_number,a.street,a.city,a.district,a.pincode,a.landmark,o.order_total, o.order_status_id, os.order_status, o.delivery_updated_at
+	FROM orders o
+	JOIN users u ON o.user_id = u.id
+	JOIN payment_methods pm ON o.payment_method_id = pm.id
+	JOIN addresses a ON o.shipping_address_id = a.id
+	JOIN order_statuses os ON o.order_status_id = os.id`
+	err := c.DB.Raw(Query).Scan(&orders).Error
+    if err!=nil{
+	return orders,err
+    }
+
+
+	// query := `SELECT id,house_number,street,city,district,pincode,landmark,
+	// FROM addresses WHERE id= ?`
+	// var address response.Addressrespond
+
+	// for i, order := range orders {
+
+	// 	if c.DB.Raw(query, order.ShippingAddressID).Scan(&address).Error != nil {
+	// 		return orders, errors.New("faild to fetch addresses")
+	// 	}
+	// 	orders[i].Address = address
+	// }
+	  return orders, nil
 }
 
-func (c *OrderDB)Listorder(ctx context.Context,Orderid int,UserId int)(order domain.Orders, err error )  {
+
+
+func (c *OrderDB) Listorder(ctx context.Context, Orderid int, UserId int) (order domain.Orders, err error) {
 	findOrder := `SELECT * FROM orders WHERE user_id=$1 AND id=$2`
-      err = c.DB.Raw(findOrder, Orderid, UserId).Scan(&order).Error
+	err = c.DB.Raw(findOrder, Orderid, UserId).Scan(&order).Error
 	return order, err
 }
 
-
-func (c *OrderDB) ReturnOrder(userId, orderId int) (float64,error) {
+func (c *OrderDB) ReturnOrder(userId, orderId int) (float64, error) {
 	var orders domain.Orders
 	Query := `SELECT * FROM orders WHERE user_id=$1 AND id=$2`
 	err := c.DB.Raw(Query, userId, orderId).Scan(&orders).Error
@@ -200,3 +223,36 @@ func (c *OrderDB) ReturnOrder(userId, orderId int) (float64,error) {
 
 }
 
+//------order_management for adminside-------//
+
+//show aall orderstatuses for  for admin
+func (c *OrderDB) ListofOrderStatuses(ctx context.Context) (status []domain.OrderStatus, err error) {
+	Quary := `SELECT * FROM order_statuses ORDER BY order_status DESC;`
+	err = c.DB.Raw(Quary).Scan(&status).Error
+	if err != nil {
+		return status, errors.New("there will be some issues")
+	}
+	return status, err
+}
+
+//admin want to update the orderstatus
+func (c *OrderDB) AdminListorders(ctx context.Context, pagination urequest.Pagination) (orders []domain.Orders, err error) {
+	limit := pagination.PerPage
+	offset := (pagination.Page - 1) * limit
+
+	fmt.Println(limit, offset)
+	query := `SELECT * FROM orders ORDER BY order_date  DESC LIMIT $1 OFFSET $2`
+	err = c.DB.Raw(query, limit, offset).Scan(&orders).Error
+	return orders, err
+}
+
+func (c *OrderDB) UpdateOrderStatus(ctx context.Context, update urequest.Update) error {
+	fmt.Println("iam repo")
+	fmt.Println(update.OrderId, update.StatusId)
+	Quary := `UPDATE orders SET order_status_id=$1 WHERE id=$2`
+	err := c.DB.Exec(Quary, update.StatusId, update.OrderId).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

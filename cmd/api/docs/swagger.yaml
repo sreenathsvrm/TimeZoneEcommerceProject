@@ -69,6 +69,25 @@ definitions:
     required:
     - name
     type: object
+  urequest.Coupon:
+    properties:
+      discountpercent:
+        type: number
+      expirationdate:
+        type: string
+      maximumdiscountprice:
+        type: number
+      minimumpurchaseamount:
+        type: number
+      usagelimit:
+        type: integer
+    required:
+    - discountpercent
+    - expirationdate
+    - maximumdiscountprice
+    - minimumpurchaseamount
+    - usagelimit
+    type: object
   urequest.Flogin:
     properties:
       email:
@@ -131,6 +150,16 @@ definitions:
     - categoryid
     - description
     - name
+    type: object
+  urequest.Update:
+    properties:
+      order_id:
+        type: integer
+      status_id:
+        type: integer
+    required:
+    - order_id
+    - status_id
     type: object
 info:
   contact: {}
@@ -360,6 +389,27 @@ paths:
       summary: Admin can update category details
       tags:
       - Product Category
+  /admin/coupon/AddCoupons:
+    post:
+      description: Admin can add coupon
+      operationId: AddCoupon
+      parameters:
+      - description: Input true info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/urequest.Coupon'
+      responses:
+        "200":
+          description: Successfully productItem added to cart
+        "400":
+          description: can't add the product item into cart
+      security:
+      - ApiKeyAuth: []
+      summary: api for add Coupons for ecommerce
+      tags:
+      - Coupon
   /admin/findall:
     get:
       consumes:
@@ -456,6 +506,81 @@ paths:
       summary: Adminlogout
       tags:
       - Admin
+  /admin/order/Allorders:
+    get:
+      consumes:
+      - application/json
+      operationId: FindAllordersInshop
+      parameters:
+      - description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - description: Number of items to retrieve per page
+        in: query
+        name: perPage
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: FindAllorders In admin side
+      tags:
+      - Order
+  /admin/order/Status:
+    get:
+      consumes:
+      - application/json
+      description: Endpoint for getting all orderStatuses
+      operationId: List-all-orderStatus
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: for geting all order status list
+      tags:
+      - Order
+  /admin/order/UpdateStatus:
+    patch:
+      consumes:
+      - application/json
+      description: update the order statuses by every orderid.
+      operationId: Order_status
+      parameters:
+      - description: Input Field
+        in: body
+        name: inputs
+        required: true
+        schema:
+          $ref: '#/definitions/urequest.Update'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Updateorderstatus
+      tags:
+      - Order
   /admin/product/ViewProduct/{id}:
     get:
       consumes:

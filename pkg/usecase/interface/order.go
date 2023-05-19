@@ -12,7 +12,11 @@ type Orderusecase interface {
 	Razorpay(ctx context.Context, UserID, paymentMethodId int) (response.RazorPayResponse, error)
 	VerifyRazorPay(ctx context.Context, body urequest.RazorPayRequest) error
 	CancelOrder(ctx context.Context, orderId, userId int) error
-	Listorders(ctx context.Context, userid int) ([]domain.Orders, error)
+	Listorders(ctx context.Context, userid int) ([]response.OrderResponse, error)
 	Listorder(ctx context.Context, Orderid int, UserId int) (order domain.Orders, err error)
 	ReturnOrder(userId, orderId int) (float64, error)
+	ListofOrderStatuses(ctx context.Context) (status []domain.OrderStatus, err error)
+	AdminListorders(ctx context.Context, pagination urequest.Pagination) (orders []domain.Orders,err error)
+	UpdateOrderStatus(ctx context.Context, update urequest.Update) ( error) 
+
 }

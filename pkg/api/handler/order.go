@@ -372,3 +372,132 @@ func (cr *OrderHandler) ReturnOrder(ctx *gin.Context) {
 		Errors:     nil,
 	})
 }
+
+// ListAllOrderStatuses
+// @Summary for geting all order status list
+// @ID List-all-orderStatus
+// @Description Endpoint for getting all orderStatuses
+// @Tags Order
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Router /admin/order/Status [get]
+func (cr *OrderHandler) Statuses(ctx *gin.Context) {
+	status, err := cr.orderusecase.ListofOrderStatuses(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Message:    "can't List the order_statuses",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, response.Response{
+		StatusCode: 200,
+		Message:    "order_statuses ",
+		Data:       status,
+		Errors:     nil,
+	})
+
+}
+
+//@Summary FindAllorders In admin side
+//@Id FindAllordersInshop
+//@Discription list of orders.
+//@tags Order
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number for pagination"
+// @Param perPage query int false "Number of items to retrieve per page"
+// @Success 200 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Router /admin/order/Allorders [get]
+func (cr *OrderHandler) AllOrders(ctx *gin.Context) {
+	page, err := strconv.Atoi(ctx.Query("page"))
+	if err != nil {
+		// ctx.JSON(http.StatusBadRequest, response.Response{
+		// 	StatusCode: 400,
+		// 	Message:    "invalied pagenumber",
+		// 	Data:       nil,
+		// 	Errors:     err.Error(),
+		// })
+		page=1
+	}
+
+	perPage, err := strconv.Atoi(ctx.Query("perPage"))
+	if err != nil {
+		// ctx.JSON(http.StatusBadRequest, response.Response{
+		// 	StatusCode: 400,
+		// 	Message:    "invalied perPage",
+		// 	Data:       nil,
+		// 	Errors:     err.Error(),
+		// })
+		perPage=10
+	}
+
+	ListofOrders := urequest.Pagination{
+		Page:    uint(page),
+		PerPage: uint(perPage),
+	}
+
+	orders, err := cr.orderusecase.AdminListorders(ctx, ListofOrders)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Message:    "can't List the orders",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, response.Response{
+		StatusCode: 200,
+		Message:    "orders ",
+		Data:       orders,
+		Errors:     nil,
+	})
+}
+
+// @Summary Updateorderstatus
+// @ID Order_status
+// @Description update the order statuses by every orderid.
+// @Tags Order
+// @Accept json
+// @Produce json
+// @Param   inputs   body urequest.Update{}  true  "Input Field"
+// @Success 200 {object} response.Response
+// @Failure 422 {object} response.Response
+// @Router /admin/order/UpdateStatus [patch]
+func (cr *OrderHandler) UpdateOrderStatus(ctx *gin.Context) {
+	var Update urequest.Update
+	err := ctx.Bind(&Update)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Message:    "failed to read request body",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	fmt.Println("start")
+	err = cr.orderusecase.UpdateOrderStatus(ctx, Update)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Message:    "can't do something went wrong",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, response.Response{
+		StatusCode: 200,
+		Message:    "changed the orderstatus ",
+		Data:       nil,
+		Errors:     nil,
+	})
+
+}

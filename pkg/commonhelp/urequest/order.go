@@ -5,3 +5,9 @@ type RazorPayRequest struct {
 	RazorPayOrderId    string
 	Razorpay_signature string
 }
+
+
+type Update struct{
+	OrderId int   `json:"order_id" binding:"required"`
+	StatusId int   `json:"status_id" binding:"required"`
+}

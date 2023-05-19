@@ -39,8 +39,6 @@ func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 // @Failure 422 {object} response.Response
 // @Router /signup [post]
 func (cr *UserHandler) UserSignup(c *gin.Context) {
-	// ctx, cancel := context.WithTimeout(c.Request.Context(), time.Minute)
-	// defer cancel()
 	var user urequest.Fusersign
 	err := c.Bind(&user)
 	fmt.Println(user)
