@@ -23,8 +23,8 @@ func NewecartRepository(DB *gorm.DB) interfaces.CartRepo {
 
 func (c *cartDB) SaveCart(ctx context.Context, Userid int) (uint, error) {
 	var cart domain.Cart
-	query := `INSERT INTO carts (user_id,total_price) VALUES($1, $2)`
-	if c.DB.Raw(query, Userid, 0).Scan(&cart).Error != nil {
+	query := `INSERT INTO carts (user_id,discount,total_price) VALUES($1, $2,$3) RETURNING id`
+	if c.DB.Raw(query, Userid, 0,0).Scan(&cart).Error != nil {
 		return 0, fmt.Errorf("faild to save cart for user")
 	}
 	fmt.Println(cart)

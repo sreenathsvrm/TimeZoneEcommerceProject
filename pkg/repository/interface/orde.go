@@ -16,4 +16,9 @@ type OrderRepo interface {
 	AdminListorders(ctx context.Context, pagination urequest.Pagination) (orders []domain.Orders, err error)
 	ListofOrderStatuses(ctx context.Context) (status []domain.OrderStatus, err error)
 	UpdateOrderStatus(ctx context.Context, update urequest.Update) error
+	// FindWalletByUserID(ctx context.Context, userID uint) (wallet domain.Wallet, err error)
+	// SaveWallet(ctx context.Context, userID uint) (walletID uint, err error)
+	// UpdateWallet(ctx context.Context, walletID, upateTotalAmount uint) error
+	// SaveWalletTransaction(ctx context.Context, walletTrx domain.Transaction) error
+	// FindWalletTransactions(ctx context.Context, walletID uint, pagination urequest.Pagination) (transaction []domain.Transaction, err error)
 }

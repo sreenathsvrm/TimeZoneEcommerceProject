@@ -410,6 +410,110 @@ paths:
       summary: api for add Coupons for ecommerce
       tags:
       - Coupon
+  /admin/coupon/Delete/{CouponID}:
+    delete:
+      consumes:
+      - application/json
+      description: Admin can delete a coupon
+      operationId: delete-coupon
+      parameters:
+      - description: CouponID
+        in: path
+        name: CouponID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin can delete a coupon
+      tags:
+      - Coupon
+  /admin/coupon/Update/{CouponID}:
+    patch:
+      consumes:
+      - application/json
+      description: Admin can update existing coupon
+      operationId: update-coupon
+      parameters:
+      - description: CouponID
+        in: path
+        name: CouponID
+        required: true
+        type: integer
+      - description: details of coupon to be updated
+        in: body
+        name: coupon_details
+        required: true
+        schema:
+          $ref: '#/definitions/urequest.Coupon'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin can update existing coupon
+      tags:
+      - Coupon
+  /admin/coupon/Viewcoupon/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Admins can see Coupons with coupon_id
+      operationId: find-Coupon-by-id
+      parameters:
+      - description: CouponID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admins  can see Coupons with coupon_id
+      tags:
+      - Coupon
+  /admin/coupon/couponlist:
+    get:
+      consumes:
+      - application/json
+      description: Endpoint for getting all coupons
+      operationId: List-all-coupons
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: for geting all order status list
+      tags:
+      - Coupon
   /admin/findall:
     get:
       consumes:
@@ -692,6 +796,42 @@ paths:
       summary: Admin can update Product details
       tags:
       - Product
+  /admin/salesreport:
+    get:
+      consumes:
+      - application/json
+      description: Admin can view the sales report
+      operationId: view-sales-report
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin can view sales report
+      tags:
+      - Admin
+  /admin/salesreport/download:
+    get:
+      consumes:
+      - application/json
+      description: Admin can download sales report in .csv format
+      operationId: download-sales-report
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin can download sales report
+      tags:
+      - Admin
   /admin/signup:
     post:
       consumes:
@@ -840,6 +980,32 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: api for get all cart item of user
+      tags:
+      - Cart
+  /coupon/apply/{code}:
+    patch:
+      consumes:
+      - application/json
+      description: User can apply coupon to the cart
+      operationId: applay-coupon-to-cart
+      parameters:
+      - description: code
+        in: query
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User can apply a coupon to the cart
       tags:
       - Cart
   /home:

@@ -19,4 +19,6 @@ type Orderusecase interface {
 	AdminListorders(ctx context.Context, pagination urequest.Pagination) (orders []domain.Orders,err error)
 	UpdateOrderStatus(ctx context.Context, update urequest.Update) ( error) 
 
+	// GetUserWallet(ctx context.Context, userID uint) (wallet domain.Wallet, err error)
+	// GetUserWalletTransactions(ctx context.Context,userID uint, pagination urequest.Pagination) (transactions []domain.Transaction, err error)
 }

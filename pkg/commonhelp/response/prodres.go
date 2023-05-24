@@ -19,7 +19,7 @@ type Product struct {
 type Cartres struct {
 	Product_Id uint   `json:"product_item_id"`
 	ProductName   string `json:"product_name"`
-	Price         uint   `json:"price"`
+	Prize         uint   `json:"prize"`
 	Qty_in_stock    uint   `json:"qty_in_stock"`
 	Qty           uint   `json:"qty"`
 }

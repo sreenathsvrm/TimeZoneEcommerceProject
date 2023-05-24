@@ -6,6 +6,7 @@ import (
 	"ecommerce/pkg/commonhelp/urequest"
 	"ecommerce/pkg/domain"
 	services "ecommerce/pkg/usecase/interface"
+	"encoding/csv"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -50,8 +51,6 @@ func (cr *AdminHandler) SaveAdmin(c *gin.Context) {
 	}
 
 	err = cr.AdminUsecase.SaveAdmin(c.Request.Context(), admin)
-	fmt.Println(admin)
-	fmt.Println("here5")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: 400,
@@ -61,7 +60,7 @@ func (cr *AdminHandler) SaveAdmin(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println("here5")
+
 	c.JSON(http.StatusCreated, response.Response{
 		StatusCode: 201,
 		Message:    "signup Successfully",
@@ -253,7 +252,7 @@ func (cr *AdminHandler) BlockUser(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 500 {object} response.Response
- // @Router /admin/unblock/{user_id} [patch]
+// @Router /admin/unblock/{user_id} [patch]
 func (cr *AdminHandler) UnblockUser(c *gin.Context) {
 	paramsId := c.Param("user_id")
 	id, err := strconv.Atoi(paramsId)
@@ -285,7 +284,6 @@ func (cr *AdminHandler) UnblockUser(c *gin.Context) {
 	})
 }
 
-
 // FindUserByID
 // @Summary Admin can fetch a specific user details using user id
 // @ID find-user-by-id
@@ -313,5 +311,90 @@ func (cr *AdminHandler) FindUserByID(c *gin.Context) {
 	c.JSON(http.StatusOK, response.Response{
 		StatusCode: 200, Message: "Successfully fetched user details", Data: user, Errors: nil,
 	})
+
+}
+
+// ViewSalesReport
+// @Summary Admin can view sales report
+// @ID view-sales-report
+// @Description Admin can view the sales report
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Router /admin/salesreport [get]
+func (cr *AdminHandler) ViewSalesReport(ctx *gin.Context) {
+	sales, err := cr.AdminUsecase.ViewSalesReport(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Message:    "cant get sales report",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, response.Response{
+		StatusCode: 200,
+		Message:    "Sales report",
+		Data:       sales,
+		Errors:     nil,
+	})
+
+}
+
+// DownloadSalesReport
+// @Summary Admin can download sales report
+// @ID download-sales-report
+// @Description Admin can download sales report in .csv format
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Failure 400 {object} response.Response
+// @Router /admin/salesreport/download [get]
+func (cr *AdminHandler) DownloadSalesReport(ctx *gin.Context) {
+	sales, err := cr.AdminUsecase.ViewSalesReport(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Message:    "cant get sales report",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	// Set headers so browser will download the file
+	ctx.Header("Content-Type", "text/csv")
+	ctx.Header("Content-Disposition", "attachment;filename=sales.csv")
+
+	// Create a CSV writer using our response writer as our io.Writer
+	wr := csv.NewWriter(ctx.Writer)
+
+	// Write CSV header row
+	headers := []string{"Id", "Name", "Payment_method", "OrderDate", "Order_Total", "Mobile", "HouseNumber", "Pincode"}
+	if err := wr.Write(headers); err != nil {
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	// Write data rows
+	for _, sale := range sales {
+		row := []string{sale.Id, sale.Name, sale.Payment_method, sale.OrderDate.Format("2006-01-02 15:04:05"), strconv.Itoa(sale.Order_Total),
+		sale.Mobile,sale.HouseNumber,sale.Pincode,
+	}
+		if err := wr.Write(row); err != nil {
+			ctx.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+	}
+
+	// Flush the writer's buffer to ensure all data is written to the client
+	wr.Flush()
+	if err := wr.Error(); err != nil {
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
 
 }

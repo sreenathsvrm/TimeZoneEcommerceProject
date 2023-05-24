@@ -85,6 +85,7 @@ func (c *OrderDB) OrderAll(ctx context.Context, UserID, paymentMethodId int) (do
 		}
 	}
 
+
 	//Remove the product from the cart_items
 	for _, items := range cartItemes {
 		removefromCart := `DELETE FROM cart_items WHERE cart_id =$1 AND product_id=$2`
@@ -116,6 +117,12 @@ func (c *OrderDB) OrderAll(ctx context.Context, UserID, paymentMethodId int) (do
 		return domain.Orders{}, err
 	}
 
+	updatedCart := `UPDATE carts SET is_applied='F' WHERE id=$1`
+	err = tx.Exec(updatedCart,cart.Id).Error
+	if err != nil {
+		tx.Rollback()
+		return domain.Orders{}, err
+	}
 	if err = tx.Commit().Error; err != nil {
 		tx.Rollback()
 		return domain.Orders{}, err
@@ -247,7 +254,6 @@ func (c *OrderDB) AdminListorders(ctx context.Context, pagination urequest.Pagin
 }
 
 func (c *OrderDB) UpdateOrderStatus(ctx context.Context, update urequest.Update) error {
-	fmt.Println("iam repo")
 	fmt.Println(update.OrderId, update.StatusId)
 	Quary := `UPDATE orders SET order_status_id=$1 WHERE id=$2`
 	err := c.DB.Exec(Quary, update.StatusId, update.OrderId).Error

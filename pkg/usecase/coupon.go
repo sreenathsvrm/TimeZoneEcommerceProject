@@ -9,15 +9,18 @@ import (
 	"errors"
 	"math/rand"
 	"time"
+
 )
 
 type couponUsecase struct {
 	CouponRepo interfaces.CouponRepo
+	
 }
 
-func NewCouponUseCase(repo interfaces.CouponRepo) services.CouponUseCase {
+func NewCouponUseCase(repo interfaces.CouponRepo)services.CouponUseCase {
 	return &couponUsecase{
 		CouponRepo: repo,
+		
 	}
 }
 
@@ -26,13 +29,10 @@ const (
 )
 
 func generateCouponCode() string {
-	// Define the characters allowed in the coupon code
+	
 	chars := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-	// Initialize the random seed
 	rand.Seed(time.Now().UnixNano())
-
-	// Generate a random coupon code
 	code := make([]byte, couponCodeLength)
 	for i := 0; i < couponCodeLength; i++ {
 		code[i] = chars[rand.Intn(len(chars))]
@@ -71,3 +71,28 @@ func (c *couponUsecase) UpdateCouponById(ctx context.Context, CouponId int, coup
 	updated,err:=c.CouponRepo.UpdateCouponById(ctx,CouponId,coupon)
     return updated ,err
 }
+
+func (c *couponUsecase)DeleteCoupon(ctx context.Context,CouponId int)(err error)  {
+	err=c.CouponRepo.DeleteCoupon(ctx,CouponId)
+	return err
+}
+
+func (c *couponUsecase)ViewCoupon(ctx context.Context, couponID int) (domain.Coupon, error){
+   coupon,err:=c.CouponRepo.ViewCoupon(ctx,couponID)
+   return coupon,err
+}
+
+
+func (c *couponUsecase)ViewCoupons(ctx context.Context)([]domain.Coupon, error){
+   allcoupons,err:=c.CouponRepo.ViewCoupons(ctx)
+   return allcoupons,err
+}
+
+
+func (c *couponUsecase) ApplyCoupontoCart(ctx context.Context,userID int, Code string) (float64, error) {
+     Total_price,err:=c.CouponRepo.ApplyCoupontoCart(ctx,userID,Code)
+	 return Total_price,err
+}
+
+
+

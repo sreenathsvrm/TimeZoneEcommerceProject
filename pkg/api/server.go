@@ -64,6 +64,11 @@ func NewServerHTTP(userHandler *handler.UserHandler,
 			cart.DELETE("/RemoveFromCart", CartHandler.RemoveFromCart)
 			cart.PUT("/Addcount", CartHandler.Addcount)
 			cart.GET("/viewcart", CartHandler.ViewCartItems)
+			
+		}
+		coupon:=user.Group("/coupon")
+		{
+			coupon.PATCH("/apply/:code", CouponHandler.ApplyCoupon)
 		}
 		order := user.Group("/order")
 		{
@@ -92,6 +97,8 @@ func NewServerHTTP(userHandler *handler.UserHandler,
 		admin.GET("/finduser/:user_id", AdminHandler.FindUserByID)
 		admin.PATCH("/block", AdminHandler.BlockUser)
 		admin.PATCH("/unblock/:user_id", AdminHandler.UnblockUser)
+		admin.GET("/salesreport",AdminHandler.ViewSalesReport)
+		admin.GET("/salesreport/download",AdminHandler.DownloadSalesReport)
 		//category
 		category := admin.Group("/category")
 		{
@@ -120,6 +127,11 @@ func NewServerHTTP(userHandler *handler.UserHandler,
 		coupon:=admin.Group("/coupon")
 		{
 			coupon.POST("/AddCoupons",CouponHandler.AddCoupon)
+			coupon.PATCH("/Update/:CouponID",CouponHandler.UpdateCoupon)
+			coupon.DELETE("/Delete/:CouponID",CouponHandler.DeleteCoupon)
+			coupon.GET("/Viewcoupon/:id",CouponHandler.ViewCoupon)
+			coupon.GET("/couponlist",CouponHandler.Coupons)
+
 		}
 	}
 

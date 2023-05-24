@@ -97,3 +97,8 @@ func (c *AdminUsecase) FindUserbyId(ctx context.Context, userID int) (domain.Use
 	user, err := c.AdminRepo.FindUserbyId(ctx, userID)
 	return user, err
 }
+
+func (c *AdminUsecase)ViewSalesReport(ctx context.Context) ([]response.SalesReport, error){
+	report,err:=c.AdminRepo.ViewSalesReport(ctx)
+	return report,err
+}

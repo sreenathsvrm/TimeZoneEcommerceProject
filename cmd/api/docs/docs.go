@@ -388,6 +388,162 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/coupon/Delete/{CouponID}": {
+            "delete": {
+                "description": "Admin can delete a coupon",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Coupon"
+                ],
+                "summary": "Admin can delete a coupon",
+                "operationId": "delete-coupon",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "CouponID",
+                        "name": "CouponID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/coupon/Update/{CouponID}": {
+            "patch": {
+                "description": "Admin can update existing coupon",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Coupon"
+                ],
+                "summary": "Admin can update existing coupon",
+                "operationId": "update-coupon",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CouponID",
+                        "name": "CouponID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "details of coupon to be updated",
+                        "name": "coupon_details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/urequest.Coupon"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/coupon/Viewcoupon/{id}": {
+            "get": {
+                "description": "Admins can see Coupons with coupon_id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Coupon"
+                ],
+                "summary": "Admins  can see Coupons with coupon_id",
+                "operationId": "find-Coupon-by-id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "CouponID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/coupon/couponlist": {
+            "get": {
+                "description": "Endpoint for getting all coupons",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Coupon"
+                ],
+                "summary": "for geting all order status list",
+                "operationId": "List-all-coupons",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/findall": {
             "get": {
                 "consumes": [
@@ -815,6 +971,60 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/salesreport": {
+            "get": {
+                "description": "Admin can view the sales report",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Admin can view sales report",
+                "operationId": "view-sales-report",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/salesreport/download": {
+            "get": {
+                "description": "Admin can download sales report in .csv format",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Admin can download sales report",
+                "operationId": "download-sales-report",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/signup": {
             "post": {
                 "description": "Save admin with details.",
@@ -1039,6 +1249,45 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "faild to get cart items",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/coupon/apply/{code}": {
+            "patch": {
+                "description": "User can apply coupon to the cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "User can apply a coupon to the cart",
+                "operationId": "applay-coupon-to-cart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "code",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
