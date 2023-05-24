@@ -181,55 +181,7 @@ func (c *CouponDB) ApplyCoupontoCart(ctx context.Context, userID int, Code strin
 }
 
 
-// func (c *CouponDB) RemoveCouponFromCart(ctx context.Context, userID int) error {
-// 	tx := c.DB.Begin()
 
-// 	// Check if the cart exists for the user
-// 	var cart domain.Cart
-// 	getCartDetails := `SELECT * FROM carts WHERE user_id=?`
-// 	err := tx.Raw(getCartDetails, userID).Scan(&cart).Error
-// 	if err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
-
-// 	if !cart.Is_applied {
-// 		// Coupon is not applied, nothing to remove
-// 		return nil
-// 	}
-
-// 	// Reset the cart details
-// 	resetCart := `UPDATE carts SET total_price=0, coupon_id=NULL, is_applied='F' WHERE id=?`
-// 	err = tx.Exec(resetCart, cart.Id).Error
-// 	if err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
-
-// 	// Increase the usage limit of the previously applied coupon
-// 	var coupon domain.Coupon
-// 	getCoupon := `SELECT * FROM coupons WHERE id=?`
-// 	err = tx.Raw(getCoupon, cart.Coupon_id).Scan(&coupon).Error
-// 	if err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
-
-// 	coupon.UsageLimits++
-// 	updateCouponUse := `UPDATE coupons SET usage_limits=? WHERE id=?`
-// 	err = tx.Exec(updateCouponUse, coupon.UsageLimits, coupon.Id).Error
-// 	if err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
-
-// 	if err = tx.Commit().Error; err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
-
-// 	return nil
-// }
 
 
 
