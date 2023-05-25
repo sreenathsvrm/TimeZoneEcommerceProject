@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"ecommerce/pkg/commonhelp/urequest"
+	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/domain"
 	interfaces "ecommerce/pkg/repository/interface"
 	"errors"
@@ -37,7 +37,7 @@ func (c *CouponDB) AddCoupon(ctx context.Context, coupon domain.Coupon) error {
 	return nil
 }
 
-func (c *CouponDB) UpdateCouponById(ctx context.Context, CouponId int, coupon urequest.Coupon) (UpdatedCoupon domain.Coupon, err error) {
+func (c *CouponDB) UpdateCouponById(ctx context.Context, CouponId int, coupon requests.Coupon) (UpdatedCoupon domain.Coupon, err error) {
 	updateCoupon := `UPDATE coupons SET discount_percent=$1, usage_limits=$2, maximum_discount_price=$3, minimum_purchase_price=$4, expiry_date=$5
 		 WHERE id=$6
 		 RETURNING id, discount_percent, usage_limits, maximum_discount_price, minimum_purchase_price, expiry_date`
@@ -115,6 +115,7 @@ func (c *CouponDB) ApplyCoupontoCart(ctx context.Context, userID int, Code strin
 		tx.Rollback()
 		return 0, err
 	}
+
 	fmt.Println(coupon.Id)
 	if coupon.Id == 0 {
 		return 0, fmt.Errorf("coupons not available")
@@ -165,7 +166,7 @@ func (c *CouponDB) ApplyCoupontoCart(ctx context.Context, userID int, Code strin
 		return 0, err
 	}
 	fmt.Println(discount)
-	// update the cart total with the subtotal - discount amount 
+	// update the cart total with the subtotal - discount amount
 	updatedCart := `UPDATE carts SET total_price=$1,coupon_id=$2,is_applied='T' WHERE id=$3`
 	err = tx.Exec(updatedCart, cart.Total_price-discount, coupon.Id, cart.Id).Error
 	if err != nil {
@@ -180,8 +181,52 @@ func (c *CouponDB) ApplyCoupontoCart(ctx context.Context, userID int, Code strin
 
 }
 
+// func (c *CouponDB) RemoveCouponFromCart(ctx context.Context, userID int) error {
+// 	tx := c.DB.Begin()
 
+// 	// Check if the cart exists for the user
+// 	var cart domain.Cart
+// 	getCartDetails := `SELECT * FROM carts WHERE user_id=?`
+// 	err := tx.Raw(getCartDetails, userID).Scan(&cart).Error
+// 	if err != nil {
+// 		tx.Rollback()
+// 		return err
+// 	}
 
+// 	if !cart.Is_applied {
+// 		// Coupon is not applied, nothing to remove
+// 		return nil
+// 	}
 
+// 	// Reset the cart details
+// 	resetCart := `UPDATE carts SET total_price=0, coupon_id=NULL, is_applied='F' WHERE id=?`
+// 	err = tx.Exec(resetCart, cart.Id).Error
+// 	if err != nil {
+// 		tx.Rollback()
+// 		return err
+// 	}
 
+// 	// Increase the usage limit of the previously applied coupon
+// 	var coupon domain.Coupon
+// 	getCoupon := `SELECT * FROM coupons WHERE id=?`
+// 	err = tx.Raw(getCoupon, cart.Coupon_id).Scan(&coupon).Error
+// 	if err != nil {
+// 		tx.Rollback()
+// 		return err
+// 	}
 
+// 	coupon.UsageLimits++
+// 	updateCouponUse := `UPDATE coupons SET usage_limits=? WHERE id=?`
+// 	err = tx.Exec(updateCouponUse, coupon.UsageLimits, coupon.Id).Error
+// 	if err != nil {
+// 		tx.Rollback()
+// 		return err
+// 	}
+
+// 	if err = tx.Commit().Error; err != nil {
+// 		tx.Rollback()
+// 		return err
+// 	}
+
+// 	return nil
+// }

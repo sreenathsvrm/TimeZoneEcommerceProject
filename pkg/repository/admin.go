@@ -1,8 +1,8 @@
 package repository
 
 import (
+	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/commonhelp/response"
-	"ecommerce/pkg/commonhelp/urequest"
 	"ecommerce/pkg/domain"
 	interfaces "ecommerce/pkg/repository/interface"
 	"errors"
@@ -39,7 +39,7 @@ func (c *AdminDB) SaveAdmin(ctx context.Context, admin domain.Admin) error {
 	return nil
 }
 
-func (c *AdminDB) FindAllUser(ctx context.Context, pagination urequest.Pagination) (users []response.UserValue, err error) {
+func (c *AdminDB) FindAllUser(ctx context.Context, pagination requests.Pagination) (users []response.UserValue, err error) {
 
 	limit := pagination.Page
 	offset := (pagination.PerPage - 1) * limit
@@ -51,7 +51,7 @@ func (c *AdminDB) FindAllUser(ctx context.Context, pagination urequest.Paginatio
 	return users, err
 }
 
-func (c *AdminDB) BlockUser(body urequest.BlockUser, AdminId int) error {
+func (c *AdminDB) BlockUser(body requests.BlockUser, AdminId int) error {
 	// Start a transaction
 	tx := c.DB.Begin()
 	//Check if the user is there

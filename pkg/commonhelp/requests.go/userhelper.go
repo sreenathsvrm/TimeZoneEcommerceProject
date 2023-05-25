@@ -1,13 +1,13 @@
-package urequest
+package requests
 
-type Fusersign struct {
+type Usersign struct {
 	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required"`
 	Mobile   string `json:"mobile" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
-type Flogin struct {
+type Login struct {
 	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }

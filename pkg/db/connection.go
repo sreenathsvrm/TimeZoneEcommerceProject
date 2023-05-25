@@ -36,6 +36,7 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 		domain.PaymentStatus{},
 		domain.PaymentDetails{},
 		domain.Coupon{},
+		domain.WishList{},
 		
 	)
 

@@ -2,8 +2,8 @@ package repository
 
 import (
 	"context"
+	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/commonhelp/response"
-	"ecommerce/pkg/commonhelp/urequest"
 	"ecommerce/pkg/domain"
 	interfaces "ecommerce/pkg/repository/interface"
 	"errors"
@@ -38,7 +38,7 @@ func (c *OrderDB) OrderAll(ctx context.Context, UserID, paymentMethodId int) (do
 	}
 	if cart.Total_price == 0 {
 		tx.Rollback()
-		return domain.Orders{}, err
+		return domain.Orders{}, fmt.Errorf("cart 2")
 	}
 	// -------AddressFetch
 	var address domain.Address
@@ -50,7 +50,7 @@ func (c *OrderDB) OrderAll(ctx context.Context, UserID, paymentMethodId int) (do
 	}
 	if address.ID == 0 {
 		tx.Rollback()
-		return domain.Orders{}, err
+		return domain.Orders{}, fmt.Errorf("address er")
 	}
 
 	var order domain.Orders
@@ -63,7 +63,7 @@ func (c *OrderDB) OrderAll(ctx context.Context, UserID, paymentMethodId int) (do
 		return domain.Orders{}, err
 	}
 
-	var cartItemes []urequest.CartItems
+	var cartItemes []requests.CartItems
 	cartDetail := `SELECT ci.product_id,ci.qty,p.prize,p.qty_in_stock  from cart_items ci join products p on ci.product_id = p.id where ci.cart_id=$1`
 	err = tx.Raw(cartDetail, cart.Id).Scan(&cartItemes).Error
 	if err != nil {
@@ -84,7 +84,6 @@ func (c *OrderDB) OrderAll(ctx context.Context, UserID, paymentMethodId int) (do
 			return domain.Orders{}, err
 		}
 	}
-
 
 	//Remove the product from the cart_items
 	for _, items := range cartItemes {
@@ -118,7 +117,7 @@ func (c *OrderDB) OrderAll(ctx context.Context, UserID, paymentMethodId int) (do
 	}
 
 	updatedCart := `UPDATE carts SET is_applied='F' WHERE id=$1`
-	err = tx.Exec(updatedCart,cart.Id).Error
+	err = tx.Exec(updatedCart, cart.Id).Error
 	if err != nil {
 		tx.Rollback()
 		return domain.Orders{}, err
@@ -135,7 +134,7 @@ func (c *OrderDB) CancelOrder(ctx context.Context, orderId, userId int) error {
 	tx := c.DB.Begin()
 
 	//find the orderd product and qty and update the product with those
-	var items []urequest.CartItems
+	var items []requests.CartItems
 	findProducts := `SELECT product_id,qty FROM order_lines WHERE order_id=?`
 	err := tx.Raw(findProducts, orderId).Scan(&items).Error
 	if err != nil {
@@ -184,10 +183,9 @@ func (c *OrderDB) Listorders(ctx context.Context) ([]response.OrderResponse, err
 	JOIN addresses a ON o.shipping_address_id = a.id
 	JOIN order_statuses os ON o.order_status_id = os.id`
 	err := c.DB.Raw(Query).Scan(&orders).Error
-    if err!=nil{
-	return orders,err
-    }
-
+	if err != nil {
+		return orders, err
+	}
 
 	// query := `SELECT id,house_number,street,city,district,pincode,landmark,
 	// FROM addresses WHERE id= ?`
@@ -200,10 +198,8 @@ func (c *OrderDB) Listorders(ctx context.Context) ([]response.OrderResponse, err
 	// 	}
 	// 	orders[i].Address = address
 	// }
-	  return orders, nil
+	return orders, nil
 }
-
-
 
 func (c *OrderDB) Listorder(ctx context.Context, Orderid int, UserId int) (order domain.Orders, err error) {
 	findOrder := `SELECT * FROM orders WHERE user_id=$1 AND id=$2`
@@ -243,7 +239,7 @@ func (c *OrderDB) ListofOrderStatuses(ctx context.Context) (status []domain.Orde
 }
 
 //admin want to update the orderstatus
-func (c *OrderDB) AdminListorders(ctx context.Context, pagination urequest.Pagination) (orders []domain.Orders, err error) {
+func (c *OrderDB) AdminListorders(ctx context.Context, pagination requests.Pagination) (orders []domain.Orders, err error) {
 	limit := pagination.PerPage
 	offset := (pagination.Page - 1) * limit
 
@@ -253,7 +249,7 @@ func (c *OrderDB) AdminListorders(ctx context.Context, pagination urequest.Pagin
 	return orders, err
 }
 
-func (c *OrderDB) UpdateOrderStatus(ctx context.Context, update urequest.Update) error {
+func (c *OrderDB) UpdateOrderStatus(ctx context.Context, update requests.Update) error {
 	fmt.Println(update.OrderId, update.StatusId)
 	Quary := `UPDATE orders SET order_status_id=$1 WHERE id=$2`
 	err := c.DB.Exec(Quary, update.StatusId, update.OrderId).Error

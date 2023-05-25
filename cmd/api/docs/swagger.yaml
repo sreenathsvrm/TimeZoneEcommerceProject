@@ -16,16 +16,7 @@ definitions:
     required:
     - password
     type: object
-  response.Response:
-    properties:
-      data: {}
-      error: {}
-      message:
-        type: string
-      stastuscode:
-        type: integer
-    type: object
-  urequest.Addcount:
+  requests.Addcount:
     properties:
       count:
         minimum: 1
@@ -35,7 +26,7 @@ definitions:
     required:
     - product_id
     type: object
-  urequest.AddressReq:
+  requests.AddressReq:
     properties:
       city:
         type: string
@@ -50,26 +41,26 @@ definitions:
       street:
         type: string
     type: object
-  urequest.BlockUser:
+  requests.BlockUser:
     properties:
       reason:
         type: string
       user_id:
         type: integer
     type: object
-  urequest.Cartreq:
+  requests.Cartreq:
     properties:
       productId:
         type: integer
     type: object
-  urequest.Category:
+  requests.Category:
     properties:
       name:
         type: string
     required:
     - name
     type: object
-  urequest.Coupon:
+  requests.Coupon:
     properties:
       discountpercent:
         type: number
@@ -88,7 +79,7 @@ definitions:
     - minimumpurchaseamount
     - usagelimit
     type: object
-  urequest.Flogin:
+  requests.Login:
     properties:
       email:
         type: string
@@ -98,30 +89,14 @@ definitions:
     - email
     - password
     type: object
-  urequest.Fusersign:
-    properties:
-      email:
-        type: string
-      mobile:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-    required:
-    - email
-    - mobile
-    - name
-    - password
-    type: object
-  urequest.OTPreq:
+  requests.OTPreq:
     properties:
       phoneNumber:
         type: string
     required:
     - phoneNumber
     type: object
-  urequest.Otpverifier:
+  requests.Otpverifier:
     properties:
       phoneNumber:
         type: string
@@ -131,7 +106,7 @@ definitions:
     - phoneNumber
     - pin
     type: object
-  urequest.Product:
+  requests.Product:
     properties:
       brand:
         type: string
@@ -151,7 +126,7 @@ definitions:
     - description
     - name
     type: object
-  urequest.Update:
+  requests.Update:
     properties:
       order_id:
         type: integer
@@ -161,9 +136,80 @@ definitions:
     - order_id
     - status_id
     type: object
+  requests.Usersign:
+    properties:
+      email:
+        type: string
+      mobile:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - mobile
+    - name
+    - password
+    type: object
+  response.Response:
+    properties:
+      data: {}
+      error: {}
+      message:
+        type: string
+      stastuscode:
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
+  /Addwishlist/{product_id}:
+    post:
+      operationId: AddToWishList
+      parameters:
+      - description: product_id
+        in: path
+        name: product_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successfully added product to wishlist
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: invalid input
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: api to add a product to wish list
+      tags:
+      - Wishlist
+  /Removewishlist/{product_id}:
+    delete:
+      operationId: RemoveFromWishList
+      parameters:
+      - description: product_id
+        in: path
+        name: product_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successfully removed product item from wishlist
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: invalid input
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: api to remove a product from wish list
+      tags:
+      - Wishlist
   /SaveAddress:
     post:
       consumes:
@@ -176,7 +222,7 @@ paths:
         name: inputs
         required: true
         schema:
-          $ref: '#/definitions/urequest.AddressReq'
+          $ref: '#/definitions/requests.AddressReq'
       produces:
       - application/json
       responses:
@@ -203,7 +249,7 @@ paths:
         name: inputs
         required: true
         schema:
-          $ref: '#/definitions/urequest.AddressReq'
+          $ref: '#/definitions/requests.AddressReq'
       produces:
       - application/json
       responses:
@@ -230,7 +276,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/urequest.BlockUser'
+          $ref: '#/definitions/requests.BlockUser'
       produces:
       - application/json
       responses:
@@ -265,7 +311,7 @@ paths:
         name: category_name
         required: true
         schema:
-          $ref: '#/definitions/urequest.Category'
+          $ref: '#/definitions/requests.Category'
       produces:
       - application/json
       responses:
@@ -374,7 +420,7 @@ paths:
         name: category_details
         required: true
         schema:
-          $ref: '#/definitions/urequest.Category'
+          $ref: '#/definitions/requests.Category'
       produces:
       - application/json
       responses:
@@ -399,7 +445,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/urequest.Coupon'
+          $ref: '#/definitions/requests.Coupon'
       responses:
         "200":
           description: Successfully productItem added to cart
@@ -453,7 +499,7 @@ paths:
         name: coupon_details
         required: true
         schema:
-          $ref: '#/definitions/urequest.Coupon'
+          $ref: '#/definitions/requests.Coupon'
       produces:
       - application/json
       responses:
@@ -670,7 +716,7 @@ paths:
         name: inputs
         required: true
         schema:
-          $ref: '#/definitions/urequest.Update'
+          $ref: '#/definitions/requests.Update'
       produces:
       - application/json
       responses:
@@ -749,7 +795,7 @@ paths:
         name: new_product_details
         required: true
         schema:
-          $ref: '#/definitions/urequest.Product'
+          $ref: '#/definitions/requests.Product'
       produces:
       - application/json
       responses:
@@ -781,7 +827,7 @@ paths:
         name: category_details
         required: true
         schema:
-          $ref: '#/definitions/urequest.Product'
+          $ref: '#/definitions/requests.Product'
       produces:
       - application/json
       responses:
@@ -899,7 +945,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/urequest.Cartreq'
+          $ref: '#/definitions/requests.Cartreq'
       responses:
         "200":
           description: Successfully productItem added to cart
@@ -922,7 +968,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/urequest.Addcount'
+          $ref: '#/definitions/requests.Addcount'
       produces:
       - application/json
       responses:
@@ -949,7 +995,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/urequest.Cartreq'
+          $ref: '#/definitions/requests.Cartreq'
       produces:
       - application/json
       responses:
@@ -1027,7 +1073,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/urequest.Flogin'
+          $ref: '#/definitions/requests.Login'
       produces:
       - application/json
       responses:
@@ -1191,7 +1237,7 @@ paths:
         name: user_mobile
         required: true
         schema:
-          $ref: '#/definitions/urequest.OTPreq'
+          $ref: '#/definitions/requests.OTPreq'
       produces:
       - application/json
       responses:
@@ -1218,7 +1264,7 @@ paths:
         name: otp
         required: true
         schema:
-          $ref: '#/definitions/urequest.Otpverifier'
+          $ref: '#/definitions/requests.Otpverifier'
       produces:
       - application/json
       responses:
@@ -1245,7 +1291,7 @@ paths:
         name: inputs
         required: true
         schema:
-          $ref: '#/definitions/urequest.Fusersign'
+          $ref: '#/definitions/requests.Usersign'
       produces:
       - application/json
       responses:
@@ -1307,4 +1353,17 @@ paths:
       summary: api for get address of user
       tags:
       - Users
+  /wishlist:
+    get:
+      operationId: GetWishListI
+      responses:
+        "200":
+          description: Wish list is empty
+        "400":
+          description: faild to get user wish list items
+      security:
+      - ApiKeyAuth: []
+      summary: api get all wish list items of user
+      tags:
+      - Wishlist
 swagger: "2.0"

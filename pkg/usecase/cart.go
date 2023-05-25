@@ -2,15 +2,11 @@ package usecase
 
 import (
 	"context"
-
-	// "ecommerce/pkg/domain"
-
+	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/commonhelp/response"
-	"ecommerce/pkg/commonhelp/urequest"
 	"ecommerce/pkg/domain"
 	interfaces "ecommerce/pkg/repository/interface"
 	services "ecommerce/pkg/usecase/interface"
-
 	"github.com/pkg/errors"
 )
 
@@ -24,7 +20,7 @@ func NewCartUsecase(CartRepo interfaces.CartRepo) services.CartUsecase {
 	}
 }
 
-func (c *CartUsecase) AddCartItem(ctx context.Context, body urequest.Cartreq) error {
+func (c *CartUsecase) AddCartItem(ctx context.Context, body requests.Cartreq) error {
 
 	//	a. product_id validate (find product by product_id),
 	product, err := c.CartRepo.FindProduct(ctx, uint(body.ProductId))
@@ -77,7 +73,7 @@ func (c *CartUsecase) FindUserCart(ctx context.Context, userID int) (cart domain
 	return cart, err
 }
 
-func (c *CartUsecase) RemoveFromCart(ctx context.Context, body urequest.Cartreq) error {
+func (c *CartUsecase) RemoveFromCart(ctx context.Context, body requests.Cartreq) error {
 
 	//	a. product_id validate (find product by product_id),
 	product, err := c.CartRepo.FindProduct(ctx, uint(body.ProductId))
@@ -115,9 +111,7 @@ func (c *CartUsecase) RemoveFromCart(ctx context.Context, body urequest.Cartreq)
 
 }
 
-
-
-func (c *CartUsecase) AddQuantity(ctx context.Context, body urequest.Addcount) error {
+func (c *CartUsecase) AddQuantity(ctx context.Context, body requests.Addcount) error {
 	product, err := c.CartRepo.FindProduct(ctx, uint(body.ProductId))
 	if err != nil {
 		return errors.New("invalied product")
@@ -126,21 +120,20 @@ func (c *CartUsecase) AddQuantity(ctx context.Context, body urequest.Addcount) e
 	if product.Id == 0 {
 		return errors.New("now product is unavailable ")
 	}
-    
-	if body.Count<0{
+
+	if body.Count < 0 {
 		return errors.New("cant add -ve values to quantity")
 	}
 
-	if body.Count>uint(product.Qty_in_stock){
-       return errors.New("insufficient product quantity in stock")
+	if body.Count > uint(product.Qty_in_stock) {
+		return errors.New("insufficient product quantity in stock")
 	}
 
-	
-	cart,err:= c.CartRepo.FindCartByUserID(ctx,body.UserID)
-	if err!=nil{
+	cart, err := c.CartRepo.FindCartByUserID(ctx, body.UserID)
+	if err != nil {
 		errors.New("user have no cart")
 	}
-  
+
 	cartitem, err := c.CartRepo.FindCartIDNproductId(ctx, cart.Id, uint(body.ProductId))
 	if err != nil {
 		return err
@@ -148,17 +141,18 @@ func (c *CartUsecase) AddQuantity(ctx context.Context, body urequest.Addcount) e
 		return errors.New("product is not exist in your cart")
 	}
 
-	err=c.CartRepo.AddQuantity(ctx,cartitem.Id,body.Count); if err!=nil{
-        return errors.New("unable to add more quantity")
+	err = c.CartRepo.AddQuantity(ctx, cartitem.Id, body.Count)
+	if err != nil {
+		return errors.New("unable to add more quantity")
 	}
-  
+
 	return nil
 }
 
-func (c *CartUsecase)FindCartlistByCartID(ctx context.Context, cartID uint) ( []response.Cartres,  error) {
-	  cartitems,err:=c.CartRepo.FindCartlistByCartID(ctx,cartID); if err !=nil{
-       return cartitems,err
-	  }
-	 return cartitems,nil
+func (c *CartUsecase) FindCartlistByCartID(ctx context.Context, cartID uint) ([]response.Cartres, error) {
+	cartitems, err := c.CartRepo.FindCartlistByCartID(ctx, cartID)
+	if err != nil {
+		return cartitems, err
+	}
+	return cartitems, nil
 }
-

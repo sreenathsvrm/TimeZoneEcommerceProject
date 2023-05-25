@@ -16,6 +16,80 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/Addwishlist/{product_id}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "Wishlist"
+                ],
+                "summary": "api to add a product to wish list",
+                "operationId": "AddToWishList",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "product_id",
+                        "name": "product_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successfully added product to wishlist",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/Removewishlist/{product_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "Wishlist"
+                ],
+                "summary": "api to remove a product from wish list",
+                "operationId": "RemoveFromWishList",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "product_id",
+                        "name": "product_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successfully removed product item from wishlist",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/SaveAddress": {
             "post": {
                 "description": "Create a new user with the specified details.",
@@ -37,7 +111,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.AddressReq"
+                            "$ref": "#/definitions/requests.AddressReq"
                         }
                     }
                 ],
@@ -78,7 +152,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.AddressReq"
+                            "$ref": "#/definitions/requests.AddressReq"
                         }
                     }
                 ],
@@ -119,7 +193,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.BlockUser"
+                            "$ref": "#/definitions/requests.BlockUser"
                         }
                     }
                 ],
@@ -172,7 +246,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.Category"
+                            "$ref": "#/definitions/requests.Category"
                         }
                     }
                 ],
@@ -334,7 +408,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.Category"
+                            "$ref": "#/definitions/requests.Category"
                         }
                     }
                 ],
@@ -374,7 +448,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.Coupon"
+                            "$ref": "#/definitions/requests.Coupon"
                         }
                     }
                 ],
@@ -455,7 +529,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.Coupon"
+                            "$ref": "#/definitions/requests.Coupon"
                         }
                     }
                 ],
@@ -784,7 +858,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.Update"
+                            "$ref": "#/definitions/requests.Update"
                         }
                     }
                 ],
@@ -903,7 +977,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.Product"
+                            "$ref": "#/definitions/requests.Product"
                         }
                     }
                 ],
@@ -951,7 +1025,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.Product"
+                            "$ref": "#/definitions/requests.Product"
                         }
                     }
                 ],
@@ -1131,7 +1205,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.Cartreq"
+                            "$ref": "#/definitions/requests.Cartreq"
                         }
                     }
                 ],
@@ -1166,7 +1240,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.Addcount"
+                            "$ref": "#/definitions/requests.Addcount"
                         }
                     }
                 ],
@@ -1207,7 +1281,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.Cartreq"
+                            "$ref": "#/definitions/requests.Cartreq"
                         }
                     }
                 ],
@@ -1328,7 +1402,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.Flogin"
+                            "$ref": "#/definitions/requests.Login"
                         }
                     }
                 ],
@@ -1573,7 +1647,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.OTPreq"
+                            "$ref": "#/definitions/requests.OTPreq"
                         }
                     }
                 ],
@@ -1614,7 +1688,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.Otpverifier"
+                            "$ref": "#/definitions/requests.Otpverifier"
                         }
                     }
                 ],
@@ -1655,7 +1729,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/urequest.Fusersign"
+                            "$ref": "#/definitions/requests.Usersign"
                         }
                     }
                 ],
@@ -1747,6 +1821,28 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/wishlist": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "Wishlist"
+                ],
+                "summary": "api get all wish list items of user",
+                "operationId": "GetWishListI",
+                "responses": {
+                    "200": {
+                        "description": "Wish list is empty"
+                    },
+                    "400": {
+                        "description": "faild to get user wish list items"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1774,20 +1870,7 @@ const docTemplate = `{
                 }
             }
         },
-        "response.Response": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "error": {},
-                "message": {
-                    "type": "string"
-                },
-                "stastuscode": {
-                    "type": "integer"
-                }
-            }
-        },
-        "urequest.Addcount": {
+        "requests.Addcount": {
             "type": "object",
             "required": [
                 "product_id"
@@ -1802,7 +1885,7 @@ const docTemplate = `{
                 }
             }
         },
-        "urequest.AddressReq": {
+        "requests.AddressReq": {
             "type": "object",
             "properties": {
                 "city": {
@@ -1825,7 +1908,7 @@ const docTemplate = `{
                 }
             }
         },
-        "urequest.BlockUser": {
+        "requests.BlockUser": {
             "type": "object",
             "properties": {
                 "reason": {
@@ -1836,7 +1919,7 @@ const docTemplate = `{
                 }
             }
         },
-        "urequest.Cartreq": {
+        "requests.Cartreq": {
             "type": "object",
             "properties": {
                 "productId": {
@@ -1844,7 +1927,7 @@ const docTemplate = `{
                 }
             }
         },
-        "urequest.Category": {
+        "requests.Category": {
             "type": "object",
             "required": [
                 "name"
@@ -1855,7 +1938,7 @@ const docTemplate = `{
                 }
             }
         },
-        "urequest.Coupon": {
+        "requests.Coupon": {
             "type": "object",
             "required": [
                 "discountpercent",
@@ -1882,7 +1965,7 @@ const docTemplate = `{
                 }
             }
         },
-        "urequest.Flogin": {
+        "requests.Login": {
             "type": "object",
             "required": [
                 "email",
@@ -1897,30 +1980,7 @@ const docTemplate = `{
                 }
             }
         },
-        "urequest.Fusersign": {
-            "type": "object",
-            "required": [
-                "email",
-                "mobile",
-                "name",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "mobile": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "urequest.OTPreq": {
+        "requests.OTPreq": {
             "type": "object",
             "required": [
                 "phoneNumber"
@@ -1931,7 +1991,7 @@ const docTemplate = `{
                 }
             }
         },
-        "urequest.Otpverifier": {
+        "requests.Otpverifier": {
             "type": "object",
             "required": [
                 "phoneNumber",
@@ -1946,7 +2006,7 @@ const docTemplate = `{
                 }
             }
         },
-        "urequest.Product": {
+        "requests.Product": {
             "type": "object",
             "required": [
                 "brand",
@@ -1975,7 +2035,7 @@ const docTemplate = `{
                 }
             }
         },
-        "urequest.Update": {
+        "requests.Update": {
             "type": "object",
             "required": [
                 "order_id",
@@ -1986,6 +2046,42 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "status_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "requests.Usersign": {
+            "type": "object",
+            "required": [
+                "email",
+                "mobile",
+                "name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "mobile": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.Response": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "error": {},
+                "message": {
+                    "type": "string"
+                },
+                "stastuscode": {
                     "type": "integer"
                 }
             }

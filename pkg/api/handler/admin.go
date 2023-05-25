@@ -2,8 +2,9 @@ package handler
 
 import (
 	"ecommerce/pkg/api/utilhandler"
+	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/commonhelp/response"
-	"ecommerce/pkg/commonhelp/urequest"
+
 	"ecommerce/pkg/domain"
 	services "ecommerce/pkg/usecase/interface"
 	"encoding/csv"
@@ -165,7 +166,7 @@ func (cr *AdminHandler) FindAllUser(c *gin.Context) {
 		})
 	}
 
-	list := urequest.Pagination{
+	list := requests.Pagination{
 		Page:    uint(page),
 		PerPage: uint(perPage),
 	}
@@ -195,14 +196,14 @@ func (cr *AdminHandler) FindAllUser(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
-// @Param input body urequest.BlockUser{} true "inputs"
+// @Param input body requests.BlockUser{} true "inputs"
 // @Success 200 {object} response.Response
 // @Failure 401 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
 // @Router /admin/block [patch]
 func (cr *AdminHandler) BlockUser(c *gin.Context) {
-	var body urequest.BlockUser
+	var body requests.BlockUser
 	err := c.Bind(&body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
@@ -382,14 +383,13 @@ func (cr *AdminHandler) DownloadSalesReport(ctx *gin.Context) {
 	// Write data rows
 	for _, sale := range sales {
 		row := []string{sale.Id, sale.Name, sale.Payment_method, sale.OrderDate.Format("2006-01-02 15:04:05"), strconv.Itoa(sale.Order_Total),
-		sale.Mobile,sale.HouseNumber,sale.Pincode,
-	}
+			sale.Mobile, sale.HouseNumber, sale.Pincode,
+		}
 		if err := wr.Write(row); err != nil {
 			ctx.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
 	}
-
 	// Flush the writer's buffer to ensure all data is written to the client
 	wr.Flush()
 	if err := wr.Error(); err != nil {

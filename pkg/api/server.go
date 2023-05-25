@@ -40,6 +40,7 @@ func NewServerHTTP(userHandler *handler.UserHandler,
 		user.POST("otp/send", otpHandler.SendOtp)
 		user.POST("otp/verify", otpHandler.ValidateOtp)
 		user.POST("logout", userHandler.UserLogout)
+		
 
 	}
 	user.Use(middleware.UserAuth)
@@ -48,6 +49,9 @@ func NewServerHTTP(userHandler *handler.UserHandler,
 		user.POST("SaveAddress", userHandler.AddAdress)
 		user.PATCH("UpdateAddress", userHandler.UpdateAdress)
 		user.GET("viewAddress", userHandler.VeiwAddress)
+		user.POST("Addwishlist/:id",userHandler.AddToWishList)
+		user.DELETE("/Removewishlist/:id",userHandler.RemoveFromWishList)
+		user.GET("wishlist",userHandler.GetWishList)
 
 		category := user.Group("/category")
 		{

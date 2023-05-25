@@ -1,4 +1,4 @@
-package urequest
+package requests
 
 type RazorPayRequest struct {
 	RazorPayPaymentId  string

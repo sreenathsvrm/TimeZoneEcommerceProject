@@ -1,8 +1,8 @@
 package handler
 
 import (
+	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/commonhelp/response"
-	"ecommerce/pkg/commonhelp/urequest"
 	"ecommerce/pkg/config"
 	services "ecommerce/pkg/usecase/interface"
 	"fmt"
@@ -32,12 +32,12 @@ func NewOtpHandler(cfg config.Config, otpUseCase services.OtpUseCase, userUseCas
 // @Tags Otp
 // @Accept json
 // @Produce json
-// @Param user_mobile body  urequest.OTPreq true "User mobile number"
+// @Param user_mobile body  requests.OTPreq true "User mobile number"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Router /otp/send [post]
 func (cr *OtpHandler) SendOtp(c *gin.Context) {
-	var phno urequest.OTPreq
+	var phno requests.OTPreq
 	err := c.Bind(&phno)
 	if err != nil {
 		fmt.Println("e1")
@@ -78,12 +78,12 @@ func (cr *OtpHandler) SendOtp(c *gin.Context) {
 // @Tags Otp
 // @Accept json
 // @Produce json
-// @Param otp body urequest.Otpverifier true "OTP sent to user's mobile number"
+// @Param otp body requests.Otpverifier true "OTP sent to user's mobile number"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Router /otp/verify [post]
 func (cr *OtpHandler) ValidateOtp(c *gin.Context) {
-	var otpDetails urequest.Otpverifier
+	var otpDetails requests.Otpverifier
 	err := c.Bind(&otpDetails)
 
 	if err != nil {
@@ -126,5 +126,3 @@ func (cr *OtpHandler) ValidateOtp(c *gin.Context) {
 		Errors:     nil,
 	})
 }
-
-

@@ -1,8 +1,8 @@
 package handler
 
 import (
+	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/commonhelp/response"
-	"ecommerce/pkg/commonhelp/urequest"
 	services "ecommerce/pkg/usecase/interface"
 	"net/http"
 	"strconv"
@@ -27,12 +27,12 @@ func NewproductHandler(ProductUsecase services.ProductUsecase) *ProductHandler {
 // @Tags Product Category
 // @Accept json
 // @Produce json
-// @Param category_name body urequest.Category true "New category name"
+// @Param category_name body requests.Category true "New category name"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Router /admin/category/add [post]
 func (cr *ProductHandler) Addcategory(c *gin.Context) {
-	var newcategory urequest.Category
+	var newcategory requests.Category
 	err := c.Bind(&newcategory)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
@@ -70,12 +70,12 @@ func (cr *ProductHandler) Addcategory(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path string true "ID of the Category to be updated"
-// @Param category_details body urequest.Category true "category info"
+// @Param category_details body requests.Category true "category info"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Router /admin/category/update/{id} [patch]
 func (cr *ProductHandler) UpdatCategory(c *gin.Context) {
-	var category urequest.Category
+	var category requests.Category
 	err := c.Bind(&category)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
@@ -241,12 +241,12 @@ func (cr *ProductHandler) DisplayCategory(c *gin.Context) {
 // @Tags Product
 // @Accept json
 // @Produce json
-// @Param new_product_details body urequest.Product true "new product details"
+// @Param new_product_details body requests.Product true "new product details"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Router /admin/product/save [post]
 func (cr *ProductHandler) SaveProduct(c *gin.Context) {
-	var product urequest.Product
+	var product requests.Product
 	err := c.Bind(&product)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
@@ -286,12 +286,12 @@ func (cr *ProductHandler) SaveProduct(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path string true "ID of the product to be updated"
-// @Param category_details body urequest.Product true "Product info"
+// @Param category_details body requests.Product true "Product info"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Router /admin/product/updateproduct/{id} [patch]
 func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
-	var product urequest.Product
+	var product requests.Product
 	err := c.Bind(&product)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
@@ -411,7 +411,7 @@ func (cr *ProductHandler) ViewAllProducts(c *gin.Context) {
 		})
 	}
 
-	listProducts := urequest.Pagination{
+	listProducts := requests.Pagination{
 		Page:    uint(page),
 		PerPage: uint(perPage),
 	}
@@ -457,7 +457,7 @@ func (cr *ProductHandler) VeiwProduct(c *gin.Context) {
 		})
 		return
 	}
-	product, err := cr.ProductUsecase.VeiwProduct(c.Request.Context(),id)
+	product, err := cr.ProductUsecase.VeiwProduct(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: 400,
@@ -474,6 +474,3 @@ func (cr *ProductHandler) VeiwProduct(c *gin.Context) {
 		Errors:     nil,
 	})
 }
-
-
-

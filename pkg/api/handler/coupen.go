@@ -2,8 +2,9 @@ package handler
 
 import (
 	"ecommerce/pkg/api/utilhandler"
+	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/commonhelp/response"
-	"ecommerce/pkg/commonhelp/urequest"
+
 	"ecommerce/pkg/domain"
 	services "ecommerce/pkg/usecase/interface"
 	"net/http"
@@ -29,12 +30,12 @@ func NewCoupenHandler(CouponUsecase services.CouponUseCase) *CouponHandler {
 // @security ApiKeyAuth
 // @id AddCoupon
 // @tags Coupon
-// @Param input body urequest.Coupon true "Input true info"
+// @Param input body requests.Coupon true "Input true info"
 // @Router /admin/coupon/AddCoupons [post]
 // @Success 200 "Successfully productItem added to cart"
 // @Failure 400 "can't add the product item into cart"
 func (cr *CouponHandler) AddCoupon(ctx *gin.Context) {
-	var body urequest.Coupon
+	var body requests.Coupon
 	err := ctx.Bind(&body)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Response{
@@ -74,7 +75,7 @@ func (cr *CouponHandler) AddCoupon(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param CouponID path int true "CouponID"
-// @Param coupon_details body urequest.Coupon true "details of coupon to be updated"
+// @Param coupon_details body requests.Coupon true "details of coupon to be updated"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Router /admin/coupon/Update/{CouponID} [patch]
@@ -90,7 +91,7 @@ func (c *CouponHandler) UpdateCoupon(ctx *gin.Context) {
 		})
 		return
 	}
-	var body urequest.Coupon
+	var body requests.Coupon
 	err = ctx.Bind(&body)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Response{

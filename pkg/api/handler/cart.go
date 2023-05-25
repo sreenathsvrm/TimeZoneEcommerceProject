@@ -2,8 +2,9 @@ package handler
 
 import (
 	"ecommerce/pkg/api/utilhandler"
+	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/commonhelp/response"
-	"ecommerce/pkg/commonhelp/urequest"
+
 	services "ecommerce/pkg/usecase/interface"
 	"fmt"
 	"net/http"
@@ -27,12 +28,12 @@ func NewCartHandler(CartUsecase services.CartUsecase) *CartHandler {
 // @security ApiKeyAuth
 // @id AddToCart
 // @tags Cart
-// @Param input body urequest.Cartreq true "Input true info"
+// @Param input body requests.Cartreq true "Input true info"
 // @Router /cart/AddToCart [post]
 // @Success 200 "Successfully productItem added to cart"
 // @Failure 400 "can't add the product item into cart"
 func (c *CartHandler) AddCartItem(ctx *gin.Context) {
-	var body urequest.Cartreq
+	var body requests.Cartreq
 	err := ctx.Bind(&body)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Response{
@@ -44,10 +45,8 @@ func (c *CartHandler) AddCartItem(ctx *gin.Context) {
 		return
 	}
 
-	
-
 	body.UserID, err = utilhandler.GetUserIdFromContext(ctx)
-    fmt.Println(body,err)
+	fmt.Println(body, err)
 	err = c.CartUsecase.AddCartItem(ctx, body)
 
 	if err != nil {
@@ -74,12 +73,12 @@ func (c *CartHandler) AddCartItem(ctx *gin.Context) {
 // @Tags Cart
 // @Accept json
 // @Produce json
-// @Param input body urequest.Cartreq{} true "Input Field"
+// @Param input body requests.Cartreq{} true "Input Field"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Router /cart/RemoveFromCart [delete]
-func (c *CartHandler) RemoveFromCart(ctx *gin.Context)  {
-	var body urequest.Cartreq
+func (c *CartHandler) RemoveFromCart(ctx *gin.Context) {
+	var body requests.Cartreq
 	err := ctx.Bind(&body)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Response{
@@ -92,7 +91,7 @@ func (c *CartHandler) RemoveFromCart(ctx *gin.Context)  {
 	}
 
 	body.UserID, err = utilhandler.GetUserIdFromContext(ctx)
-    fmt.Println(body,err)
+	fmt.Println(body, err)
 	err = c.CartUsecase.RemoveFromCart(ctx, body)
 
 	if err != nil {
@@ -112,8 +111,6 @@ func (c *CartHandler) RemoveFromCart(ctx *gin.Context)  {
 	})
 }
 
-
-
 // AddQuntity
 // @Summary Admin can delete a category
 // @ID Add-Qantity
@@ -121,13 +118,13 @@ func (c *CartHandler) RemoveFromCart(ctx *gin.Context)  {
 // @Tags Cart
 // @Accept json
 // @Produce json
-// @Param input body urequest.Addcount{} true "Input Field"
+// @Param input body requests.Addcount{} true "Input Field"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Router /cart/Addcount [put]
-func (c *CartHandler)Addcount(ctx *gin.Context)  {
-	
-	var body urequest.Addcount
+func (c *CartHandler) Addcount(ctx *gin.Context) {
+
+	var body requests.Addcount
 
 	err := ctx.Bind(&body)
 	if err != nil {
@@ -141,7 +138,7 @@ func (c *CartHandler)Addcount(ctx *gin.Context)  {
 	}
 
 	body.UserID, err = utilhandler.GetUserIdFromContext(ctx)
-    fmt.Println(body,err)
+	fmt.Println(body, err)
 	err = c.CartUsecase.AddQuantity(ctx, body)
 
 	if err != nil {
@@ -160,7 +157,6 @@ func (c *CartHandler)Addcount(ctx *gin.Context)  {
 		Errors:     nil,
 	})
 
-	
 }
 
 // viewCart godoc
@@ -172,12 +168,12 @@ func (c *CartHandler)Addcount(ctx *gin.Context)  {
 // @Router /cart/viewcart [get]
 // @Success 200 {object} response.Response{} "successfully got user cart items"
 // @Failure 500 {object} response.Response{} "faild to get cart items"
-func (c *CartHandler)ViewCartItems(ctx *gin.Context)  {
+func (c *CartHandler) ViewCartItems(ctx *gin.Context) {
 
-	userID,err:=utilhandler.GetUserIdFromContext(ctx)
-	cart,err:=c.CartUsecase.FindUserCart(ctx,userID)
-	if err!=nil{
-		ctx.JSON(http.StatusBadRequest,response.Response{
+	userID, err := utilhandler.GetUserIdFromContext(ctx)
+	cart, err := c.CartUsecase.FindUserCart(ctx, userID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: 400,
 			Message:    "Unable to get cart",
 			Data:       nil,
@@ -186,7 +182,7 @@ func (c *CartHandler)ViewCartItems(ctx *gin.Context)  {
 		return
 	}
 
-	if cart.Id==0{
+	if cart.Id == 0 {
 		ctx.JSON(http.StatusOK, response.Response{
 			StatusCode: 200,
 			Message:    "you are not add any products to cart",
@@ -196,28 +192,29 @@ func (c *CartHandler)ViewCartItems(ctx *gin.Context)  {
 		return
 	}
 
-  cartitems,err:=c.CartUsecase.FindCartlistByCartID(ctx,cart.Id); if err!=nil{
-	   ctx.JSON(http.StatusBadRequest,response.Response{
-		StatusCode: 400,
-		Message:    "Unable to get cartitems",
-		Data:       nil,
-		Errors:     err.Error(),
-	})
-	return
-  }
-  if cartitems ==nil{
+	cartitems, err := c.CartUsecase.FindCartlistByCartID(ctx, cart.Id)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Message:    "Unable to get cartitems",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	if cartitems == nil {
+		ctx.JSON(http.StatusOK, response.Response{
+			StatusCode: 200,
+			Message:    "sorry no products in your cart",
+			Data:       nil,
+			Errors:     nil,
+		})
+		return
+	}
 	ctx.JSON(http.StatusOK, response.Response{
 		StatusCode: 200,
-		Message:    "sorry no products in your cart",
-		Data:       nil,
+		Message:    "your carts here",
+		Data:       cartitems,
 		Errors:     nil,
 	})
-	return
-  }
-  ctx.JSON(http.StatusOK, response.Response{
-	StatusCode: 200,
-	Message:    "your carts here",
-	Data:       cartitems,
-	Errors:     nil,
-})
 }

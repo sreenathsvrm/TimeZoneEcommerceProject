@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"context"
-	"ecommerce/pkg/commonhelp/urequest"
+	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/config"
 	interfaces "ecommerce/pkg/usecase/interface"
 	"fmt"
@@ -22,7 +22,7 @@ func NewOtpUseCase(cfg config.Config) interfaces.OtpUseCase {
 	}
 }
 
-func (c *OtpUseCase) SendOTP(ctx context.Context, mobno urequest.OTPreq) (string, error) {
+func (c *OtpUseCase) SendOTP(ctx context.Context, mobno requests.OTPreq) (string, error) {
 
 	client := twilio.NewRestClientWithParams(twilio.ClientParams{
 		Password: c.cfg.AUTHTOCKEN,
@@ -38,12 +38,11 @@ func (c *OtpUseCase) SendOTP(ctx context.Context, mobno urequest.OTPreq) (string
 	if err != nil {
 		return "", err
 	}
-	
 
 	return *resp.Sid, nil
 }
 
-func (c *OtpUseCase) VerifyOTP(ctx context.Context, userData urequest.Otpverifier) error {
+func (c *OtpUseCase) VerifyOTP(ctx context.Context, userData requests.Otpverifier) error {
 
 	client := twilio.NewRestClientWithParams(twilio.ClientParams{
 		Password: c.cfg.AUTHTOCKEN,

@@ -2,15 +2,15 @@ package usecase
 
 import (
 	"context"
+	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/commonhelp/response"
-	"ecommerce/pkg/commonhelp/urequest"
 	"ecommerce/pkg/domain"
+	"time"
 	interfaces "ecommerce/pkg/repository/interface"
 	services "ecommerce/pkg/usecase/interface"
-	"errors"
-	"time"
 	"github.com/golang-jwt/jwt"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -25,7 +25,7 @@ func NewAdminUseCase(repo interfaces.AdminRepository) services.AdminUsecase {
 }
 
 func (c *AdminUsecase) SaveAdmin(ctx context.Context, admin domain.Admin) error {
-	
+
 	if admin, err := c.AdminRepo.FindAdmin(ctx, admin); err != nil {
 		return err
 	} else if admin.ID != 0 {
@@ -39,7 +39,7 @@ func (c *AdminUsecase) SaveAdmin(ctx context.Context, admin domain.Admin) error 
 	}
 	// set the hashed password
 	admin.Password = string(hashPass)
-	
+
 	return c.AdminRepo.SaveAdmin(ctx, admin)
 }
 
@@ -70,7 +70,7 @@ func (c *AdminUsecase) LoginAdmin(ctx context.Context, admin domain.Admin) (stri
 	return ss, nil
 }
 
-func (c *AdminUsecase) FindAllUser(ctx context.Context, pagination urequest.Pagination) (users []response.UserValue, err error) {
+func (c *AdminUsecase) FindAllUser(ctx context.Context, pagination requests.Pagination) (users []response.UserValue, err error) {
 
 	users, err = c.AdminRepo.FindAllUser(ctx, pagination)
 
@@ -82,23 +82,22 @@ func (c *AdminUsecase) FindAllUser(ctx context.Context, pagination urequest.Pagi
 	return respond, nil
 }
 
-
-func (c *AdminUsecase)  BlockUser(body urequest.BlockUser, adminId int) error {
+func (c *AdminUsecase) BlockUser(body requests.BlockUser, adminId int) error {
 	err := c.AdminRepo.BlockUser(body, adminId)
 	return err
 }
 
-func (c *AdminUsecase)  UnblockUser(id int) error {
-	 err := c.AdminRepo.UnblockUser(id)
+func (c *AdminUsecase) UnblockUser(id int) error {
+	err := c.AdminRepo.UnblockUser(id)
 	return err
 }
 
-func (c *AdminUsecase) FindUserbyId(ctx context.Context, userID int) (domain.Users,error)  {
+func (c *AdminUsecase) FindUserbyId(ctx context.Context, userID int) (domain.Users, error) {
 	user, err := c.AdminRepo.FindUserbyId(ctx, userID)
 	return user, err
 }
 
-func (c *AdminUsecase)ViewSalesReport(ctx context.Context) ([]response.SalesReport, error){
-	report,err:=c.AdminRepo.ViewSalesReport(ctx)
-	return report,err
+func (c *AdminUsecase) ViewSalesReport(ctx context.Context) ([]response.SalesReport, error) {
+	report, err := c.AdminRepo.ViewSalesReport(ctx)
+	return report, err
 }

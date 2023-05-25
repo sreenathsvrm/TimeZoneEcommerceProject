@@ -2,8 +2,8 @@ package handler
 
 import (
 	"ecommerce/pkg/api/utilhandler"
+	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/commonhelp/response"
-	"ecommerce/pkg/commonhelp/urequest"
 	services "ecommerce/pkg/usecase/interface"
 	"fmt"
 	"net/http"
@@ -145,7 +145,7 @@ func (cr *OrderHandler) RazorpayVerify(ctx *gin.Context) {
 		return
 	}
 
-	body := urequest.RazorPayRequest{
+	body := requests.RazorPayRequest{
 		RazorPayPaymentId:  razorPayPaymentId,
 		RazorPayOrderId:    razorPayOrderId,
 		Razorpay_signature: razorpay_signature,
@@ -161,7 +161,6 @@ func (cr *OrderHandler) RazorpayVerify(ctx *gin.Context) {
 		})
 		return
 	}
-
 	order, err := cr.orderusecase.PlaceOrder(ctx, userId, paymentid)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Response{
@@ -423,7 +422,7 @@ func (cr *OrderHandler) AllOrders(ctx *gin.Context) {
 		// 	Data:       nil,
 		// 	Errors:     err.Error(),
 		// })
-		page=1
+		page = 1
 	}
 
 	perPage, err := strconv.Atoi(ctx.Query("perPage"))
@@ -434,10 +433,10 @@ func (cr *OrderHandler) AllOrders(ctx *gin.Context) {
 		// 	Data:       nil,
 		// 	Errors:     err.Error(),
 		// })
-		perPage=10
+		perPage = 10
 	}
 
-	ListofOrders := urequest.Pagination{
+	ListofOrders := requests.Pagination{
 		Page:    uint(page),
 		PerPage: uint(perPage),
 	}
@@ -466,12 +465,12 @@ func (cr *OrderHandler) AllOrders(ctx *gin.Context) {
 // @Tags Order
 // @Accept json
 // @Produce json
-// @Param   inputs   body urequest.Update{}  true  "Input Field"
+// @Param   inputs   body requests.Update{}  true  "Input Field"
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Router /admin/order/UpdateStatus [patch]
 func (cr *OrderHandler) UpdateOrderStatus(ctx *gin.Context) {
-	var Update urequest.Update
+	var Update requests.Update
 	err := ctx.Bind(&Update)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Response{

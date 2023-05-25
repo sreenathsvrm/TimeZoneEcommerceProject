@@ -5,16 +5,16 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"crypto/subtle"
+	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/commonhelp/response"
-	"ecommerce/pkg/commonhelp/urequest"
 	"ecommerce/pkg/config"
 	"ecommerce/pkg/domain"
 	interfaces "ecommerce/pkg/repository/interface"
 	services "ecommerce/pkg/usecase/interface"
 	"encoding/hex"
-	"errors"
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/razorpay/razorpay-go"
 )
 
@@ -74,7 +74,7 @@ func (c *Orderusecase) Razorpay(ctx context.Context, UserID, paymentMethodId int
 	}, nil
 }
 
-func (c *Orderusecase) VerifyRazorPay(ctx context.Context, body urequest.RazorPayRequest) error {
+func (c *Orderusecase) VerifyRazorPay(ctx context.Context, body requests.RazorPayRequest) error {
 	razorpayKey := config.Getconfig().RAZOR_PAY_KEY
 	razorPaySecret := config.Getconfig().RAZOR_PAY_SECRET
 
@@ -130,18 +130,18 @@ func (c *Orderusecase) ReturnOrder(userId, orderId int) (float64, error) {
 	return total, err
 }
 
-func (c *Orderusecase)ListofOrderStatuses(ctx context.Context) ([]domain.OrderStatus,  error)  {
+func (c *Orderusecase) ListofOrderStatuses(ctx context.Context) ([]domain.OrderStatus, error) {
 	var status []domain.OrderStatus
-	status,err:=c.orderRepo.ListofOrderStatuses(ctx)
-	return status,err
+	status, err := c.orderRepo.ListofOrderStatuses(ctx)
+	return status, err
 }
 
-func(c *Orderusecase)AdminListorders(ctx context.Context, pagination urequest.Pagination) (orders []domain.Orders,err error){
-	orders,err=c.orderRepo.AdminListorders(ctx,pagination)
-	return orders,err
+func (c *Orderusecase) AdminListorders(ctx context.Context, pagination requests.Pagination) (orders []domain.Orders, err error) {
+	orders, err = c.orderRepo.AdminListorders(ctx, pagination)
+	return orders, err
 }
 
-func (c *Orderusecase)UpdateOrderStatus(ctx context.Context, update urequest.Update) ( error) {
-	 err:=c.orderRepo.UpdateOrderStatus(ctx,update)
-	 return err
+func (c *Orderusecase) UpdateOrderStatus(ctx context.Context, update requests.Update) error {
+	err := c.orderRepo.UpdateOrderStatus(ctx, update)
+	return err
 }

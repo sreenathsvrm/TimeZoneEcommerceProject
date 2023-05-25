@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"context"
+	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/commonhelp/response"
-	"ecommerce/pkg/commonhelp/urequest"
 	interfaces "ecommerce/pkg/repository/interface"
 	services "ecommerce/pkg/usecase/interface"
 )
@@ -18,12 +18,12 @@ func NewProductUsecase(ProductRepo interfaces.ProductRepo) services.ProductUseca
 	}
 }
 
-func (P *ProductUsecase) Addcategory(ctx context.Context, req urequest.Category) (response.Category, error) {
+func (P *ProductUsecase) Addcategory(ctx context.Context, req requests.Category) (response.Category, error) {
 	addcatagory, err := P.ProductRepo.Addcategory(ctx, req)
 	return addcatagory, err
 }
 
-func (P *ProductUsecase) UpdatCategory(ctx context.Context, category urequest.Category, id int) (response.Category, error) {
+func (P *ProductUsecase) UpdatCategory(ctx context.Context, category requests.Category, id int) (response.Category, error) {
 	updatedcatagory, err := P.ProductRepo.UpdatCategory(ctx, category, id)
 	return updatedcatagory, err
 }
@@ -46,12 +46,12 @@ func (p *ProductUsecase) ShowCatagory(ctx context.Context, Id int) (response.Cat
 
 }
 
-func (p *ProductUsecase) SaveProduct(ctx context.Context, product urequest.Product) (response.Product, error) {
+func (p *ProductUsecase) SaveProduct(ctx context.Context, product requests.Product) (response.Product, error) {
 	newproduct, err := p.ProductRepo.SaveProduct(ctx, product)
 	return newproduct, err
 }
 
-func (p *ProductUsecase) UpdateProduct(ctx context.Context, id int, product urequest.Product) (response.Product, error) {
+func (p *ProductUsecase) UpdateProduct(ctx context.Context, id int, product requests.Product) (response.Product, error) {
 	updateproduct, err := p.ProductRepo.UpdateProduct(ctx, id, product)
 	return updateproduct, err
 
@@ -64,13 +64,12 @@ func (p *ProductUsecase) DeleteProduct(ctx context.Context, id int) error {
 	return err
 }
 
-func (p *ProductUsecase) ViewAllProducts(ctx context.Context, pagination urequest.Pagination) (products []response.Product, err error) {
+func (p *ProductUsecase) ViewAllProducts(ctx context.Context, pagination requests.Pagination) (products []response.Product, err error) {
 	allProducts, err := p.ProductRepo.ViewAllProducts(ctx, pagination)
 	return allProducts, err
 }
 
-
-func (p *ProductUsecase) VeiwProduct(ctx context.Context,id int)(response.Product,error)  {
-	product,err:=p.ProductRepo.ViewProduct(ctx,id)
-	return product,err
+func (p *ProductUsecase) VeiwProduct(ctx context.Context, id int) (response.Product, error) {
+	product, err := p.ProductRepo.ViewProduct(ctx, id)
+	return product, err
 }
