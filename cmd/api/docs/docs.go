@@ -1369,6 +1369,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/coupon/coupons": {
+            "get": {
+                "description": "Endpoint for getting all coupons in user side",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Coupon"
+                ],
+                "summary": "for geting all coupon list",
+                "operationId": "List-all-coupons-user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/home": {
             "get": {
                 "responses": {

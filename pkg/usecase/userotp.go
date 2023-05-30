@@ -5,7 +5,6 @@ import (
 	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/config"
 	interfaces "ecommerce/pkg/usecase/interface"
-	"fmt"
 
 	"github.com/twilio/twilio-go"
 	twilioApi "github.com/twilio/twilio-go/rest/verify/v2"
@@ -29,7 +28,6 @@ func (c *OtpUseCase) SendOTP(ctx context.Context, mobno requests.OTPreq) (string
 		Username: c.cfg.ACCOUNTSID,
 	})
 
-	fmt.Println(mobno, c.cfg.AUTHTOCKEN, c.cfg.ACCOUNTSID, c.cfg.SERVICES_ID)
 	params := &twilioApi.CreateVerificationParams{}
 	params.SetTo(mobno.Phone)
 	params.SetChannel("sms")

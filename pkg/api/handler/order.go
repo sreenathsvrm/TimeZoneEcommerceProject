@@ -75,7 +75,6 @@ func (cr *OrderHandler) CashonDElivery(ctx *gin.Context) {
 }
 
 func (c *OrderHandler) RazorpayCheckout(ctx *gin.Context) {
-	fmt.Println("herer")
 	UserID, err := utilhandler.GetUserIdFromContext(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Response{
@@ -481,7 +480,6 @@ func (cr *OrderHandler) UpdateOrderStatus(ctx *gin.Context) {
 		})
 		return
 	}
-	fmt.Println("start")
 	err = cr.orderusecase.UpdateOrderStatus(ctx, Update)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Response{

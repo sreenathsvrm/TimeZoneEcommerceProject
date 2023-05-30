@@ -8,7 +8,7 @@ import (
 	"ecommerce/pkg/domain"
 	services "ecommerce/pkg/usecase/interface"
 	"encoding/csv"
-	"fmt"
+
 	"net/http"
 	"strconv"
 
@@ -40,7 +40,6 @@ func (cr *AdminHandler) SaveAdmin(c *gin.Context) {
 	// defer cancel()
 	var admin domain.Admin
 	err := c.Bind(&admin)
-	fmt.Println(admin)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{
 			StatusCode: 422,

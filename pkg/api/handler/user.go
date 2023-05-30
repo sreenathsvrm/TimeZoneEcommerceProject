@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -17,12 +16,6 @@ import (
 type UserHandler struct {
 	userUseCase services.UserUseCase
 }
-
-// type Response struct {
-// 	ID    uint   `copier:"must"`
-// 	Name  string `copier:"must"`
-// 	Email string `copier:"must"`
-// }
 
 func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 	return &UserHandler{
@@ -43,7 +36,6 @@ func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 func (cr *UserHandler) UserSignup(c *gin.Context) {
 	var user requests.Usersign
 	err := c.Bind(&user)
-	fmt.Println(user)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{
 			StatusCode: 422,

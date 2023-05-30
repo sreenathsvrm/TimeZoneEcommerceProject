@@ -6,7 +6,6 @@ import (
 	"ecommerce/pkg/commonhelp/response"
 
 	services "ecommerce/pkg/usecase/interface"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -46,7 +45,6 @@ func (c *CartHandler) AddCartItem(ctx *gin.Context) {
 	}
 
 	body.UserID, err = utilhandler.GetUserIdFromContext(ctx)
-	fmt.Println(body, err)
 	err = c.CartUsecase.AddCartItem(ctx, body)
 
 	if err != nil {
@@ -91,7 +89,7 @@ func (c *CartHandler) RemoveFromCart(ctx *gin.Context) {
 	}
 
 	body.UserID, err = utilhandler.GetUserIdFromContext(ctx)
-	fmt.Println(body, err)
+
 	err = c.CartUsecase.RemoveFromCart(ctx, body)
 
 	if err != nil {
@@ -138,7 +136,7 @@ func (c *CartHandler) Addcount(ctx *gin.Context) {
 	}
 
 	body.UserID, err = utilhandler.GetUserIdFromContext(ctx)
-	fmt.Println(body, err)
+
 	err = c.CartUsecase.AddQuantity(ctx, body)
 
 	if err != nil {

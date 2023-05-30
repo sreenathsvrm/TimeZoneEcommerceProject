@@ -42,14 +42,12 @@ func (c *userUseCase) UserLogin(ctx context.Context, user requests.Login) (strin
 	if err != nil {
 		return "", err
 	} else if userData.ID == 0 {
-		return "", fmt.Errorf("user not founf")
+		return "", fmt.Errorf("user not found")
 	}
 
 	if user.Email == "" {
 		return "", fmt.Errorf("no user found")
 	}
-
-	fmt.Println("db", userData.Password, "user", user.Password)
 
 	err = bcrypt.CompareHashAndPassword([]byte(userData.Password), []byte(user.Password))
 	if err != nil {
@@ -59,7 +57,6 @@ func (c *userUseCase) UserLogin(ctx context.Context, user requests.Login) (strin
 	if userstatus.IsBlocked {
 		return "", fmt.Errorf("user is blocked")
 	}
-	fmt.Println("user_id on jwt generate ", userData.ID)
 	claims := jwt.MapClaims{
 		"id":  userData.ID,
 		"exp": time.Now().Add(time.Hour * 72).Unix(),
@@ -81,7 +78,6 @@ func (c *userUseCase) OtpLogin(mobno string) (string, error) {
 		return "", errors.New("user not exist with given mobile number")
 	}
 
-	fmt.Println("user_id on otp_login", id)
 	claims := jwt.MapClaims{
 		"id":  id,
 		"exp": time.Now().Add(time.Hour * 72).Unix(),

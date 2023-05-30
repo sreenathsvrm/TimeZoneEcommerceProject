@@ -280,3 +280,34 @@ func (cr *CouponHandler) ApplyCoupon(ctx *gin.Context) {
 	})
 
 }
+
+
+// ListOfcoupons
+// @Summary for geting all coupon list
+// @ID List-all-coupons-user
+// @Description Endpoint for getting all coupons in user side
+// @Tags Coupon
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Router /coupon/coupons [get]
+func (cr *CouponHandler) UserCoupons(ctx *gin.Context) {
+	Coupons, err := cr.CouponUsecase.ViewCoupons(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Message:    "can't List the coupons",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, response.Response{
+		StatusCode: 200,
+		Message:    " here the list of coupons ",
+		Data:       Coupons,
+		Errors:     nil,
+	})
+
+}

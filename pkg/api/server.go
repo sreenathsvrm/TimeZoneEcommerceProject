@@ -39,7 +39,7 @@ func NewServerHTTP(userHandler *handler.UserHandler,
 		user.POST("login", userHandler.UserLogin)
 		user.POST("otp/send", otpHandler.SendOtp)
 		user.POST("otp/verify", otpHandler.ValidateOtp)
-		user.POST("logout", userHandler.UserLogout)
+	
 		
 
 	}
@@ -52,6 +52,7 @@ func NewServerHTTP(userHandler *handler.UserHandler,
 		user.POST("Addwishlist/:id",userHandler.AddToWishList)
 		user.DELETE("/Removewishlist/:id",userHandler.RemoveFromWishList)
 		user.GET("wishlist",userHandler.GetWishList)
+		user.POST("logout", userHandler.UserLogout)
 
 		category := user.Group("/category")
 		{
@@ -72,15 +73,14 @@ func NewServerHTTP(userHandler *handler.UserHandler,
 		}
 		coupon:=user.Group("/coupon")
 		{
+			coupon.GET("/coupons",CouponHandler.UserCoupons)
 			coupon.PATCH("/apply/:code", CouponHandler.ApplyCoupon)
 		}
 		order := user.Group("/order")
 		{
 			order.POST("/orderAll/:payment_id", OrderHandler.CashonDElivery)
-
 			order.GET("/razor/:payment_id", OrderHandler.RazorpayCheckout)
 			order.POST("/razor/success", OrderHandler.RazorpayVerify)
-
 			order.PATCH("/cancel/:orderId", OrderHandler.CancelOrder)
 			order.GET("/view/:order_id", OrderHandler.ListOrder)
 			order.GET("/listall", OrderHandler.ListAllOrders)

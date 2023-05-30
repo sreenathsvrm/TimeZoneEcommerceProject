@@ -25,7 +25,6 @@ func NewCouponUseCase(repo interfaces.CouponRepo) services.CouponUseCase {
 const (
 	couponCodeLength = 8
 )
-
 func generateCouponCode() string {
 
 	chars := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

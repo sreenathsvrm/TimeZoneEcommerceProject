@@ -32,3 +32,5 @@ go.work
 
 # Code Coverage
 code-coverage.*
+
+/build

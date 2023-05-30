@@ -1054,6 +1054,26 @@ paths:
       summary: User can apply a coupon to the cart
       tags:
       - Cart
+  /coupon/coupons:
+    get:
+      consumes:
+      - application/json
+      description: Endpoint for getting all coupons in user side
+      operationId: List-all-coupons-user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: for geting all coupon list
+      tags:
+      - Coupon
   /home:
     get:
       responses:
