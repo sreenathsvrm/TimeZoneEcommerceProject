@@ -60,7 +60,7 @@ func (c *Orderusecase) Razorpay(ctx context.Context, UserID, paymentMethodId int
 	order, err := client.Order.Create(data, nil)
 
 	if err != nil {
-		return response.RazorPayResponse{}, fmt.Errorf("faild to create razorpay order")
+		return response.RazorPayResponse{}, fmt.Errorf("faild to create razorpay order, %s",err.Error())
 	}
 
 	return response.RazorPayResponse{
