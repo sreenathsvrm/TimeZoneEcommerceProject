@@ -1,14 +1,14 @@
 package requests
 
 type Usersign struct {
-	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required"`
-	Mobile   string `json:"mobile" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Name     string `json:"name" binding:"required,min=2,max=100"`
+	Email    string `json:"email" binding:"required,email"`
+	Mobile   string `json:"mobile" binding:"required,len=10"`
+	Password string `json:"password" binding:"required,min=6"`
 }
-
+   
 type Login struct {
-	Email    string `json:"email" binding:"required"`
+	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required"`
 }
 
