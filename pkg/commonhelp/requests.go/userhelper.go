@@ -3,7 +3,7 @@ package requests
 type Usersign struct {
 	Name     string `json:"name" binding:"required,min=2,max=100"`
 	Email    string `json:"email" binding:"required,email"`
-	Mobile   string `json:"mobile" binding:"required,len=10"`
+	Mobile   string `json:"mobile" binding:"required,len=13"`
 	Password string `json:"password" binding:"required,min=6"`
 }
    
