@@ -107,16 +107,18 @@ func (c *CouponDB) UpdateCouponByCode(ctx context.Context, code string, coupon d
 
 func (c *CouponDB) ApplyCoupontoCart(ctx context.Context, userID int, Code string) (float64, error) {
 	tx := c.DB.Begin()
-	// find the coupon details
 	var coupon domain.Coupon
-	findCoupon := `SELECT * FROM coupons WHERE code=$1`
-	err := tx.Raw(findCoupon, Code).Scan(&coupon).Error
+	findCoupon := `SELECT * FROM coupons WHERE code = $1`
+	err := tx.Raw(findCoupon, Code).First(&coupon).Error
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 0, fmt.Errorf("coupon not available")
+		}
 		tx.Rollback()
 		return 0, err
 	}
 
-	fmt.Println(coupon.Id)
+	fmt.Println(coupon.Id, coupon.Code)
 	if coupon.Id == 0 {
 		return 0, fmt.Errorf("coupons not available")
 	}
@@ -167,8 +169,8 @@ func (c *CouponDB) ApplyCoupontoCart(ctx context.Context, userID int, Code strin
 	}
 	fmt.Println(discount)
 	// update the cart total with the subtotal - discount amount
-	updatedCart := `UPDATE carts SET total_price=$1,coupon_id=$2,is_applied='T' WHERE id=$3`
-	err = tx.Exec(updatedCart, cart.Total_price-discount, coupon.Id, cart.Id).Error
+	updatedCart := `UPDATE carts SET total_price=$1,is_applied='T' WHERE id=$2`
+	err = tx.Exec(updatedCart, cart.Total_price-discount, cart.Id).Error
 	if err != nil {
 		tx.Rollback()
 		return 0, err
