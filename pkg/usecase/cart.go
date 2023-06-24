@@ -156,3 +156,38 @@ func (c *CartUsecase) FindCartlistByCartID(ctx context.Context, cartID uint) ([]
 	}
 	return cartitems, nil
 }
+
+
+// {
+// 	name: "alredy exits",
+// 	input: helperStruct.UserReq{
+// 		Name:     "akshay",
+// 		Email:    "akshay@gmail.com",
+// 		Mobile:   "9072001341",
+// 		Password: "123456789",
+// 	},
+// 	buildStub: func(userRepo mockRepo.MockUserRepository) {
+// 		userRepo.EXPECT().UserSignUp(gomock.Any(),
+// 			EqCreateUserParams(helperStruct.UserReq{
+// 				Name:     "akshay",
+// 				Email:    "akshay@gmail.com",
+// 				Mobile:   "9072001341",
+// 				Password: "123456789",
+// 			},
+// 				"123456789")).
+// 			Times(1).
+// 			Return(response.UserData{},
+// 				errors.New("user alredy exits"))
+// 	},
+// 	expectedOutput: response.UserData{},
+// 	expectedError:  errors.New("user alredy exits"),
+// },
+// }
+// for _, tt := range testData {
+// t.Run(tt.name, func(t *testing.T) {
+// 	tt.buildStub(*userRepo)
+// 	actualUser, err := userUseCase.UserSignUp(context.TODO(), tt.input)
+// 	assert.Equal(t, tt.expectedError, err)
+// 	assert.Equal(t, actualUser, tt.expectedOutput)
+// })
+// }

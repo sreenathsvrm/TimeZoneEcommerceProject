@@ -1,0 +1,38 @@
+name: ecommerce-project-test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  test:
+    name: Test Application
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup action
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.18.1'
+
+      - name: Install dependencies
+        run: |
+          go mod tidy
+          go mod verify
+      
+      - name: Run Test
+        run: |
+          go test -v -cover ./...
+      
+      - name: Build executalbe file
+        run: |
+          mkdir -p build/bin
+          GOARCH=amd64 go build -v -o build/bin/api-linux-amd64 ./cmd/api
+
+      
+    

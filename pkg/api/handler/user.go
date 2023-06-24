@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -35,8 +36,9 @@ func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 // @Router /signup [post]
 func (cr *UserHandler) UserSignup(c *gin.Context) {
 	var user requests.Usersign
-	err := c.Bind(&user)
+	err := c.BindJSON(&user)
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusUnprocessableEntity, response.Response{
 			StatusCode: 422,
 			Message:    "can't bind",
