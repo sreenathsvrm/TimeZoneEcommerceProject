@@ -40,5 +40,9 @@ wire: ## Generate wire_gen.go
 swag: ## Generate swagger docs
 	swag init -g pkg/api/server.go -o ./cmd/api/docs
 
+mockgen: # Generate mock files for the test
+	mockgen -source=pkg/repository/interface/user.go -destination=pkg/repository/mockrepo/user_mock.go -package=mockrepo
+	mockgen -source=pkg/usecase/interface/user.go -destination=pkg/usecase/mockusecase/user_mock.go -package=mockusecase
+
 help: ## Display this help screen
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
