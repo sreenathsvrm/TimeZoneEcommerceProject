@@ -14,7 +14,7 @@
 To use `go-gin-clean-arch` project, follow these steps:
 
 ```bash
-# Navigate into the project
+# Navigate into  the project
 cd ./go-gin-clean-arch
 
 # Install dependencies
