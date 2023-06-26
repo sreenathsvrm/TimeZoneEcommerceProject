@@ -496,5 +496,6 @@ func (cr *OrderHandler) UpdateOrderStatus(ctx *gin.Context) {
 		Data:       nil,
 		Errors:     nil,
 	})
+	fmt.Println("done")
 
 }
