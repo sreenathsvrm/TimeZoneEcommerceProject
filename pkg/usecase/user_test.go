@@ -99,7 +99,7 @@ func TestUserSignup(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 
 			ctrl := gomock.NewController(t)
-			ddefer ctrl.Finish()
+			defer ctrl.Finish()
 			userRepo := mockrepo.NewMockUserRepository(ctrl)
 			userUseCase := NewUserUseCase(userRepo)
 			tt.buildStub(userRepo, tt.input)
