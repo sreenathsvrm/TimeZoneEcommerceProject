@@ -61,6 +61,7 @@ func (c *userUseCase) UserLogin(ctx context.Context, user requests.Login) (strin
 		"id":  userData.ID,
 		"exp": time.Now().Add(time.Hour * 72).Unix(),
 	}
+       
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	ss, err := token.SignedString([]byte("secret"))
 	if err != nil {
@@ -77,7 +78,7 @@ func (c *userUseCase) OtpLogin(mobno string) (string, error) {
 	} else if id == 0 {
 		return "", errors.New("user not exist with given mobile number")
 	}
-
+    
 	claims := jwt.MapClaims{
 		"id":  id,
 		"exp": time.Now().Add(time.Hour * 72).Unix(),

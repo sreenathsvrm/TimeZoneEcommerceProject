@@ -6,6 +6,7 @@ import (
 	"ecommerce/pkg/commonhelp/response"
 	"ecommerce/pkg/usecase/mockusecase"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -72,6 +73,33 @@ func TestUserSignup(t *testing.T) {
 				CreatedAt: time.Now(),
 			},
 			expectedError: nil,
+		},
+		{
+         name : "duplicate user",
+		 input: requests.Usersign{
+			Name: "Akshay",
+			Email: "akshay@gmail.com",
+			Mobile: "+917994475799",
+			Password: "akshay@123",
+		 },
+		 buildStub: func(userUseCase mockusecase.MockUserUseCase) {
+			userUseCase.EXPECT().UserSignup(gomock.Any(), requests.Usersign{
+				Name:     "Akshay",
+				Email:    "akshay@gmail.com",
+				Mobile:   "+917994475799",
+				Password: "akshay@123",
+			}).Times(1).
+				Return(response.UserValue{}, errors.New("user is already exist "))
+		},
+          expectedCode: 400,
+		  expectedResponse: response.Response{
+			StatusCode: 400,
+				Message:    "unable create account",
+				Data:       response.UserValue{},
+				Errors:     "user already exits",
+		  },
+		  expectedData:  response.UserValue{},
+		  expectedError: errors.New("user already exists"),
 		},
 	}
 
