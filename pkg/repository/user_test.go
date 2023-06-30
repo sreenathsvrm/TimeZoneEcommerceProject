@@ -33,14 +33,13 @@ func TestUserSignup(t *testing.T) {
 				Password: "akshay@123",
 			},
 			expectedOutput: response.UserValue{
-				ID:     6,
-				Name:   "akshay",
-				Email:  "akshay@gmail.com",
-		  
+				ID:    6,
+				Name:  "akshay",
+				Email: "akshay@gmail.com",
 			},
 
 			buildStub: func(mock sqlmock.Sqlmock) {
-				
+
 				rows := sqlmock.NewRows([]string{"id", "name", "email", "mobile"}).
 					AddRow(6, "akshay", "akshay@gmail.com", "+919562461825")
 
