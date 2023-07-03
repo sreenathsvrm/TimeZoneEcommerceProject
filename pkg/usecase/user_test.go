@@ -4,12 +4,14 @@ import (
 	"context"
 	"ecommerce/pkg/commonhelp/requests.go"
 	"ecommerce/pkg/commonhelp/response"
+	"ecommerce/pkg/domain"
 	"ecommerce/pkg/repository/mockrepo"
 	"errors"
 	"fmt"
 	"reflect"
 	"testing"
 	"time"
+
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
@@ -111,4 +113,121 @@ func TestUserSignup(t *testing.T) {
 		})
 	}
 
+}
+
+func TestLoginWithEmail(t *testing.T) {
+	//NewController from gomock package returns a new controller for testing
+	ctrl := gomock.NewController(t)
+
+	// NewMockUserRepository creates a new mockRepo instance
+	userRepo := mockrepo.NewMockUserRepository(ctrl)
+	userUseCase := NewUserUseCase(userRepo)
+
+	
+	
+
+	// testData is a slice of struct which holds multiple test cases
+	testData := []struct {
+		name           string
+		input          requests.Login
+		buildStub      func(userRepo *mockrepo.MockUserRepository)
+		isExpectingOutput bool
+		expectedError  error
+	}{
+		{
+			name: "get details from database",
+			input: requests.Login{
+				Email:    "sreenathsvrm@gmail.com",
+				Password: "sree@123",
+			},
+			buildStub: func(userRepo *mockrepo.MockUserRepository) {
+				userRepo.EXPECT().UserLogin(gomock.Any(), "sreenathsvrm@gmail.com").Times(1).
+					Return(domain.Users{}, errors.New("no user found"))
+			},
+			isExpectingOutput: false,
+			expectedError:  errors.New("no user found"),
+		},
+
+		{
+			name: "blocked user",
+			input: requests.Login{
+				Email:    "sreenathsvrm@gmail.com",
+				Password: "sree@123",
+			},
+			buildStub: func(userRepo *mockrepo.MockUserRepository) {
+				userRepo.EXPECT().UserLogin(gomock.Any(), "sreenathsvrm@gmail.com").Times(1).
+					Return(domain.Users{
+						ID: 1,
+						Email: "sreenathsvrm@gmail.com",
+						Password: "sree@123",
+						IsBlocked: true,
+					}, errors.New("user is blocked"))
+			},
+			isExpectingOutput: false,
+			expectedError:  errors.New("user is blocked"),
+		},
+   
+        {
+			name: "blocked user",
+			input: requests.Login{
+				Email:    "sreenathsvrm@gmail.com",
+				Password: "sree@123",
+			},
+			buildStub: func(userRepo *mockrepo.MockUserRepository) {
+				userRepo.EXPECT().UserLogin(gomock.Any(), "sreenathsvrm@gmail.com").Times(1).
+					Return(domain.Users{
+						ID: 1,
+						Email: "sreenathsvrm@gmail.com",
+						Password: "sree@123",
+						IsBlocked: true,
+					}, errors.New("user is blocked"))
+			},
+			isExpectingOutput: false,
+			expectedError:  errors.New("user is blocked"),
+		},
+      
+		{
+			name: "successfull login to watch shop",
+			input: requests.Login{
+				Email:    "sreenathsvrm@gmail.com",
+				Password: "sree@123",
+			},
+			buildStub: func(userRepo *mockrepo.MockUserRepository) {
+				hashedPassword,err:=bcrypt.GenerateFromPassword([]byte("sree@123"),10)
+				if err!=nil{
+					t.Fatalf("")
+				}
+				userRepo.EXPECT().UserLogin(gomock.Any(), "sreenathsvrm@gmail.com").Times(1).
+					Return(domain.Users{
+						ID: 1,
+						Email: "sreenathsvrm@gmail.com",
+						Password: string(hashedPassword),
+						IsBlocked: false,
+					}, nil)
+			},
+			isExpectingOutput: true,
+			expectedError:  nil,
+		},
+	
+	}
+
+	for _, tt := range testData {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.buildStub(userRepo)
+			tokenString, actualErr := userUseCase.UserLogin(context.TODO(), tt.input)
+
+			if tt.expectedError == nil {
+				assert.Nil(t, actualErr)
+			} else {
+				assert.Equal(t, tt.expectedError, actualErr)
+			}
+
+			if tt.isExpectingOutput{
+				assert.NotEmpty(t,tokenString)
+			}else{
+				assert.Empty(t,tokenString)
+			}
+
+		})
+	}
 }

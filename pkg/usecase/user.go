@@ -42,21 +42,21 @@ func (c *userUseCase) UserLogin(ctx context.Context, user requests.Login) (strin
 	if err != nil {
 		return "", err
 	} else if userData.ID == 0 {
-		return "", fmt.Errorf("user not found")
+		return "", fmt.Errorf("no user found")
 	}
 
 	if user.Email == "" {
 		return "", fmt.Errorf("no user found")
 	}
 
+	if userstatus.IsBlocked {
+		return "", fmt.Errorf("user is blocked")
+	}
 	err = bcrypt.CompareHashAndPassword([]byte(userData.Password), []byte(user.Password))
 	if err != nil {
 		return "", err
 	}
 
-	if userstatus.IsBlocked {
-		return "", fmt.Errorf("user is blocked")
-	}
 	claims := jwt.MapClaims{
 		"id":  userData.ID,
 		"exp": time.Now().Add(time.Hour * 72).Unix(),
