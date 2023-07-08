@@ -16,10 +16,11 @@ type Config struct {
 	SERVICES_ID      string `mapstructure:"TWILIO_SERVICES_ID"`
 	RAZOR_PAY_KEY    string `mapstructure:"RAZOR_PAY_KEY"`
 	RAZOR_PAY_SECRET string `mapstructure:"RAZOR_PAY_SECRET"`
+	
 }
 
 var envs = []string{
-	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD",
+	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT",
 	"TWILIO_AUTHTOCKEN", "TWILIO_ACCOUNT_SID", "TWILIO_SERVICES_ID", //twilio
 	"RAZOR_PAY_KEY", "RAZOR_PAY_SECRET", //razor
 }
