@@ -20,7 +20,7 @@ type Config struct {
 }
 
 var envs = []string{
-	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT",
+	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT","DB_PASSWORD",
 	"TWILIO_AUTHTOCKEN", "TWILIO_ACCOUNT_SID", "TWILIO_SERVICES_ID", //twilio
 	"RAZOR_PAY_KEY", "RAZOR_PAY_SECRET", //razor
 }
