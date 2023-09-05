@@ -39,13 +39,14 @@ func NewServerHTTP(userHandler *handler.UserHandler,
 		user.POST("login", userHandler.UserLogin)
 		user.POST("otp/send", otpHandler.SendOtp)
 		user.POST("otp/verify", otpHandler.ValidateOtp)
+		user.GET("home", userHandler.Home)
 	
 		
 
 	}
 	user.Use(middleware.UserAuth)
 	{
-		user.GET("home", userHandler.Home)
+
 		user.POST("SaveAddress", userHandler.AddAdress)
 		user.PATCH("UpdateAddress", userHandler.UpdateAdress)
 		user.GET("viewAddress", userHandler.VeiwAddress)
